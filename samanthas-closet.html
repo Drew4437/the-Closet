@@ -1,0 +1,1083 @@
+<title>Samantha's Closet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --bg:#F4F1F7;
+    --surface:#FFFFFF;
+    --surface-2:#EDE9F3;
+    --ink:#211B2C;
+    --ink-soft:#6C637A;
+    --ink-faint:#948C9F;
+    --line:rgba(33,27,44,0.12);
+    --line-strong:rgba(33,27,44,0.2);
+    --accent:#BC3865;
+    --accent-ink:#FFFFFF;
+    --accent-soft:rgba(188,56,101,0.12);
+    --gold:#A07A2A;
+    --shadow:0 1px 2px rgba(33,27,44,0.06),0 8px 24px -12px rgba(33,27,44,0.18);
+    --shadow-lg:0 20px 60px -20px rgba(33,27,44,0.35);
+    --cat-tops:#B23A63;
+    --cat-bottoms:#6E5A9C;
+    --cat-dresses:#96234F;
+    --cat-outerwear:#3E5A6E;
+    --cat-shoes:#8A6A2E;
+    --cat-bags:#3F7566;
+    --cat-accessories:#A9822E;
+    --radius-s:10px;
+    --radius-m:16px;
+    --radius-l:22px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171320;
+      --surface:#221C2C;
+      --surface-2:#2B2437;
+      --ink:#F3EFF9;
+      --ink-soft:#B6ADC4;
+      --ink-faint:#847A97;
+      --line:rgba(243,239,249,0.12);
+      --line-strong:rgba(243,239,249,0.22);
+      --accent:#EB6B95;
+      --accent-ink:#241019;
+      --accent-soft:rgba(235,107,149,0.16);
+      --gold:#D9B76A;
+      --shadow:0 1px 2px rgba(0,0,0,0.3),0 8px 24px -12px rgba(0,0,0,0.5);
+      --shadow-lg:0 20px 60px -20px rgba(0,0,0,0.6);
+      --cat-tops:#F090B3;
+      --cat-bottoms:#B7A6E0;
+      --cat-dresses:#E5709B;
+      --cat-outerwear:#9AC0D9;
+      --cat-shoes:#D9B67A;
+      --cat-bags:#8FCDBB;
+      --cat-accessories:#D9BE7E;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#171320;
+    --surface:#221C2C;
+    --surface-2:#2B2437;
+    --ink:#F3EFF9;
+    --ink-soft:#B6ADC4;
+    --ink-faint:#847A97;
+    --line:rgba(243,239,249,0.12);
+    --line-strong:rgba(243,239,249,0.22);
+    --accent:#EB6B95;
+    --accent-ink:#241019;
+    --accent-soft:rgba(235,107,149,0.16);
+    --gold:#D9B76A;
+    --shadow:0 1px 2px rgba(0,0,0,0.3),0 8px 24px -12px rgba(0,0,0,0.5);
+    --shadow-lg:0 20px 60px -20px rgba(0,0,0,0.6);
+    --cat-tops:#F090B3;
+    --cat-bottoms:#B7A6E0;
+    --cat-dresses:#E5709B;
+    --cat-outerwear:#9AC0D9;
+    --cat-shoes:#D9B67A;
+    --cat-bags:#8FCDBB;
+    --cat-accessories:#D9BE7E;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Manrope',system-ui,-apple-system,sans-serif;
+    padding-inline:0;
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces',Georgia,serif;
+    font-weight:600;
+    margin:0;
+    text-wrap:balance;
+  }
+  p{margin:0;}
+  button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;}
+  button{cursor:pointer;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .muted{color:var(--ink-soft);}
+  [hidden]{display:none!important;}
+
+  .app{max-width:1120px;margin:0 auto;padding-inline:20px;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky;
+    top:env(safe-area-inset-top,0px);
+    z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding-block:18px 0;
+    margin-inline:-20px;
+    padding-inline:20px;
+  }
+  .topbar-inner{max-width:1120px;margin:0 auto;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-mark{
+    width:42px;height:42px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--accent) 30%, transparent), color-mix(in srgb, var(--gold) 22%, transparent) 70%);
+    color:var(--accent);
+  }
+  .brand-mark svg{width:22px;height:22px;}
+  .brand-text h1{font-size:1.5rem;line-height:1.1;letter-spacing:-0.01em;}
+  .brand-text h1 em{font-style:italic;color:var(--accent);}
+  .brand-text p{font-size:0.85rem;color:var(--ink-soft);margin-top:2px;}
+  .stats-line{font-size:0.8rem;color:var(--ink-faint);margin-top:2px;font-variant-numeric:tabular-nums;}
+
+  .tabs{
+    display:flex;gap:4px;margin-top:16px;
+    background:var(--surface-2);
+    border-radius:999px;padding:4px;
+    width:fit-content;max-width:100%;
+    overflow-x:auto;
+  }
+  .tab{
+    border:none;background:transparent;color:var(--ink-soft);
+    padding:9px 18px;border-radius:999px;
+    font-weight:700;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;
+    white-space:nowrap;transition:background .15s ease, color .15s ease;
+  }
+  .tab[aria-selected="true"]{background:var(--ink);color:var(--bg);}
+  :root[data-theme="dark"] .tab[aria-selected="true"], @media (prefers-color-scheme:dark){.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);}}
+  .tab[aria-selected="true"]{background:var(--ink);color:var(--surface);}
+
+  /* ---------- main / panels ---------- */
+  .main{padding-block:24px 64px;}
+  .panel-toolbar{
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;
+    margin-bottom:20px;
+  }
+  .panel-lede{color:var(--ink-soft);font-size:0.95rem;max-width:52ch;}
+  .toolbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .filter-chip{
+    border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
+    padding:7px 14px;border-radius:999px;font-size:0.8rem;font-weight:600;
+    transition:border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .filter-chip[aria-pressed="true"]{
+    border-color:var(--accent);color:var(--accent);background:var(--accent-soft);
+  }
+
+  .search{
+    display:flex;align-items:center;gap:8px;
+    border:1px solid var(--line);border-radius:999px;
+    padding:8px 14px;background:var(--surface);color:var(--ink-faint);
+    min-width:200px;
+  }
+  .search svg{flex:none;}
+  .search input{border:none;background:none;outline:none;width:100%;color:var(--ink);}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;
+    border-radius:999px;padding:10px 18px;font-weight:700;font-size:0.82rem;
+    border:1px solid transparent;transition:transform .1s ease, opacity .15s ease, background .15s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);}
+  .btn-primary:hover{opacity:0.92;}
+  .btn-primary:disabled{opacity:0.55;cursor:default;}
+  .btn-ghost{background:transparent;color:var(--ink-soft);border-color:var(--line);}
+  .btn-ghost:hover{border-color:var(--line-strong);color:var(--ink);}
+  .btn-danger{background:transparent;color:#C4405A;border-color:rgba(196,64,90,0.35);}
+  .btn-danger:hover{background:rgba(196,64,90,0.1);}
+  .btn-sm{padding:7px 13px;font-size:0.76rem;}
+  .icon-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:50%;border:1px solid transparent;
+    background:transparent;color:var(--ink-soft);
+  }
+  .icon-btn:hover{background:var(--surface-2);color:var(--ink);}
+
+  /* ---------- grid / cards ---------- */
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:16px;
+  }
+  .grid-outfits{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
+  .card{
+    background:var(--surface);border-radius:var(--radius-m);border:1px solid var(--line);
+    overflow:hidden;box-shadow:var(--shadow);
+    animation:rise .35s ease both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion:reduce){.card{animation:none;}}
+
+  .card-media{
+    aspect-ratio:3/4;width:100%;background:var(--surface-2);position:relative;
+  }
+  .card-media img{width:100%;height:100%;object-fit:cover;display:block;}
+  .placeholder{
+    width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    background:color-mix(in srgb, var(--cat, var(--accent)) 16%, var(--surface-2));
+  }
+  .placeholder span{
+    font-family:'Fraunces',serif;font-style:italic;font-size:2.4rem;color:var(--cat, var(--accent));
+  }
+  .placeholder-sm{border-radius:8px;}
+  .placeholder-sm span{font-size:1rem;}
+
+  .card-body{padding:12px 13px 14px;}
+  .card-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;}
+  .card-title-row h3{font-size:0.98rem;font-weight:500;line-height:1.25;}
+  .card-menu-btn{flex:none;margin-top:-4px;margin-right:-6px;}
+  .card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .card-meta .muted{font-size:0.78rem;}
+
+  .chip{
+    display:inline-flex;align-items:center;border-radius:999px;padding:3px 10px;
+    font-size:0.7rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;
+  }
+  .chip-cat{color:var(--cat, var(--accent));background:color-mix(in srgb, var(--cat, var(--accent)) 16%, transparent);}
+  .dot{width:12px;height:12px;border-radius:50%;border:1px solid var(--line-strong);flex:none;}
+
+  /* outfit card */
+  .outfit-collage{
+    display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
+    aspect-ratio:1/1;gap:2px;background:var(--line);
+  }
+  .outfit-collage.count-1{grid-template-columns:1fr;grid-template-rows:1fr;}
+  .outfit-collage.count-2{grid-template-rows:1fr;}
+  .outfit-collage .slot{background:var(--surface-2);overflow:hidden;position:relative;}
+  .outfit-collage .slot img{width:100%;height:100%;object-fit:cover;display:block;}
+  .outfit-collage .slot .placeholder span{font-size:1.4rem;}
+  .outfit-empty-collage{
+    aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);color:var(--ink-faint);
+  }
+
+  /* ---------- empty states ---------- */
+  .empty-state{
+    grid-column:1/-1;
+    text-align:center;padding:56px 24px;border:1px dashed var(--line-strong);border-radius:var(--radius-l);
+    display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--ink-soft);
+  }
+  .empty-state .empty-icon{
+    width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:var(--accent-soft);color:var(--accent);
+  }
+  .empty-state h3{color:var(--ink);font-size:1.15rem;}
+  .empty-state p{max-width:38ch;font-size:0.9rem;}
+
+  /* ---------- planner ---------- */
+  .planner-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  .planner-day{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);
+    padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);
+  }
+  .planner-day.is-today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent), var(--shadow);}
+  .planner-day-head{display:flex;align-items:center;justify-content:space-between;}
+  .planner-day-name{font-family:'Fraunces',serif;font-weight:600;font-size:0.98rem;}
+  .today-badge{
+    font-size:0.62rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;
+    color:var(--accent-ink);background:var(--accent);padding:2px 7px;border-radius:999px;
+  }
+  .planner-select{
+    width:100%;border:1px solid var(--line);border-radius:var(--radius-s);
+    padding:8px 10px;background:var(--surface);color:var(--ink);font-size:0.82rem;
+  }
+  .planner-preview{min-height:64px;}
+  .planner-thumbs{display:flex;gap:5px;flex-wrap:wrap;}
+  .planner-thumb{
+    width:44px;height:56px;border-radius:6px;overflow:hidden;background:var(--surface-2);flex:none;
+  }
+  .planner-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .planner-thumb .placeholder span{font-size:1rem;}
+  .planner-outfit-name{font-size:0.78rem;color:var(--ink-soft);margin-top:6px;}
+  .planner-empty{font-size:0.78rem;padding-top:6px;}
+
+  /* ---------- modal ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(20,16,26,0.5);
+    display:flex;align-items:flex-end;justify-content:center;
+    padding:0;
+  }
+  @media (min-width:640px){
+    .modal-overlay{align-items:center;padding:24px;}
+  }
+  .modal{
+    background:var(--surface);width:100%;max-width:480px;
+    max-height:92vh;overflow-y:auto;
+    border-radius:var(--radius-l) var(--radius-l) 0 0;
+    box-shadow:var(--shadow-lg);
+    padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));
+    animation:slideup .2s ease both;
+  }
+  @media (min-width:640px){ .modal{border-radius:var(--radius-l);animation:pop .18s ease both;} }
+  @keyframes slideup{from{transform:translateY(24px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  @keyframes pop{from{transform:scale(0.97);opacity:0;}to{transform:scale(1);opacity:1;}}
+  @media (prefers-reduced-motion:reduce){.modal{animation:none;}}
+
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .modal-head h2{font-size:1.25rem;}
+
+  form label{display:flex;flex-direction:column;gap:6px;font-size:0.78rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:14px;}
+  form input[type="text"],form input:not([type]),form select,form textarea{
+    border:1px solid var(--line);border-radius:var(--radius-s);padding:10px 12px;
+    background:var(--surface);color:var(--ink);font-weight:500;text-transform:none;letter-spacing:normal;font-size:0.92rem;
+  }
+  form textarea{resize:vertical;min-height:64px;font-family:inherit;}
+  .color-row{display:flex;gap:12px;}
+  .color-row label{flex:1;}
+  .color-row input[type="color"]{padding:3px;height:40px;cursor:pointer;}
+
+  .form-photo{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+  .photo-drop{
+    width:76px;height:96px;border-radius:var(--radius-s);background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;color:var(--ink-faint);
+    border:1px solid var(--line);
+  }
+  .photo-drop img{width:100%;height:100%;object-fit:cover;}
+
+  .modal-actions{display:flex;align-items:center;gap:8px;margin-top:6px;}
+  .modal-actions .spacer{flex:1;}
+
+  .picker-group{margin-bottom:16px;}
+  .picker-group h4{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-faint);margin-bottom:8px;font-family:'Manrope',sans-serif;font-weight:700;}
+  .picker-items{display:flex;flex-wrap:wrap;gap:8px;}
+  .picker-item{
+    display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;
+    padding:5px 12px 5px 5px;cursor:pointer;font-size:0.8rem;font-weight:500;text-transform:none;letter-spacing:normal;color:var(--ink);
+  }
+  .picker-item:has(input:checked){border-color:var(--accent);background:var(--accent-soft);color:var(--accent);}
+  .picker-item img,.picker-item .placeholder-sm{width:26px;height:26px;border-radius:50%;object-fit:cover;}
+  .picker-item input{position:absolute;opacity:0;width:0;height:0;}
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));
+    transform:translateX(-50%);z-index:200;
+    background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:999px;
+    font-size:0.82rem;font-weight:600;box-shadow:var(--shadow-lg);
+    animation:toastin .2s ease both;
+  }
+  @keyframes toastin{from{opacity:0;transform:translate(-50%,8px);}to{opacity:1;transform:translate(-50%,0);}}
+
+  @media (max-width:480px){
+    .app{padding-inline:16px;}
+    .topbar{margin-inline:-16px;padding-inline:16px;}
+  }
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 7a3.4 3.4 0 1 1 2.8 5.3c-.9.6-1.5 1.2-1.5 2.1v1.9l15.4 8.8c2.3 1.3 3.7 3.7 3.7 6.3 0 1.1-.9 2.1-2.1 2.1H5.7c-1.1 0-2.1-.9-2.1-2.1 0-2.6 1.4-5 3.7-6.3l15.4-8.8v-1.9c0-.9-.6-1.5-1.5-2.1A3.4 3.4 0 0 1 24 7Zm-1.4 12.1L9.5 26.7c-1.1.6-1.9 1.6-2.3 2.8h33.6c-.4-1.2-1.2-2.2-2.3-2.8L25.4 19.1a3 3 0 0 1-1.4.3 3 3 0 0 1-1.4-.3Z"/></svg>
+        </span>
+        <div class="brand-text">
+          <h1>Samantha's <em>Closet</em></h1>
+          <p>Catalog what you own, plan what you wear.</p>
+          <p class="stats-line" id="statsLine"></p>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist" id="tabs">
+        <button class="tab" data-tab="closet" role="tab" aria-selected="true">Closet</button>
+        <button class="tab" data-tab="outfits" role="tab" aria-selected="false">Outfits</button>
+        <button class="tab" data-tab="planner" role="tab" aria-selected="false">Planner</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <section id="panel-closet" class="panel">
+      <div class="panel-toolbar">
+        <div class="chips" id="categoryChips"></div>
+        <div class="toolbar-actions">
+          <div class="search">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5"/><path d="M16 16l-3.2-3.2"/></svg>
+            <input id="closetSearch" placeholder="Search your closet" autocomplete="off">
+          </div>
+          <button class="btn btn-primary" id="btnAddItem">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg>
+            Add piece
+          </button>
+        </div>
+      </div>
+      <div class="grid" id="closetGrid"></div>
+    </section>
+
+    <section id="panel-outfits" class="panel" hidden>
+      <div class="panel-toolbar">
+        <p class="panel-lede">Mix pieces from your closet into outfits you can reuse and plan around.</p>
+        <button class="btn btn-primary" id="btnAddOutfit">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 4v12M4 10h12"/></svg>
+          Create outfit
+        </button>
+      </div>
+      <div class="grid grid-outfits" id="outfitsGrid"></div>
+    </section>
+
+    <section id="panel-planner" class="panel" hidden>
+      <div class="panel-toolbar">
+        <p class="panel-lede">Assign a saved outfit to each day of the week.</p>
+      </div>
+      <div class="planner-row" id="plannerRow"></div>
+    </section>
+  </main>
+</div>
+
+<div class="modal-overlay" id="itemModalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
+    <div class="modal-head">
+      <h2 id="itemModalTitle">Add a piece</h2>
+      <button type="button" class="icon-btn" id="itemModalClose" aria-label="Close">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+    <form id="itemForm">
+      <div class="form-photo">
+        <div class="photo-drop" id="itemPhotoPreview">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.3"/></svg>
+        </div>
+        <div>
+          <button type="button" class="btn btn-ghost btn-sm" id="itemPhotoBtn">Add photo</button>
+          <input type="file" id="itemPhotoInput" accept="image/*" hidden>
+          <p class="muted" style="font-size:0.75rem;margin-top:6px;max-width:22ch;" id="itemPhotoHint"></p>
+        </div>
+      </div>
+      <label for="itemName">Name
+        <input id="itemName" required placeholder="e.g. Sage wide-leg trousers">
+      </label>
+      <label for="itemCategory">Category
+        <select id="itemCategory"></select>
+      </label>
+      <div class="color-row">
+        <label for="itemColorName">Color
+          <input id="itemColorName" placeholder="e.g. Sage green">
+        </label>
+        <label for="itemColorHex">Swatch
+          <input type="color" id="itemColorHex" value="#BC3865">
+        </label>
+      </div>
+      <label for="itemNotes">Notes
+        <textarea id="itemNotes" placeholder="Fit, fabric, where you got it..."></textarea>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-danger" id="itemDeleteBtn" hidden>Remove</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-ghost" id="itemCancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="itemSaveBtn">Save piece</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="outfitModalOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="outfitModalTitle">
+    <div class="modal-head">
+      <h2 id="outfitModalTitle">Create an outfit</h2>
+      <button type="button" class="icon-btn" id="outfitModalClose" aria-label="Close">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+    <form id="outfitForm">
+      <label for="outfitName">Name
+        <input id="outfitName" required placeholder="e.g. Friday client meeting">
+      </label>
+      <label for="outfitOccasion">Occasion
+        <select id="outfitOccasion"></select>
+      </label>
+      <label>Pieces
+        <div id="outfitItemPicker" style="margin-top:2px;"></div>
+      </label>
+      <label for="outfitNotes">Notes
+        <textarea id="outfitNotes" placeholder="Optional styling notes"></textarea>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-danger" id="outfitDeleteBtn" hidden>Delete</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-ghost" id="outfitCancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="outfitSaveBtn">Save outfit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var CATEGORIES = ["Tops","Bottoms","Dresses","Outerwear","Shoes","Bags","Accessories"];
+  var CATEGORY_VAR = {
+    Tops:'--cat-tops', Bottoms:'--cat-bottoms', Dresses:'--cat-dresses',
+    Outerwear:'--cat-outerwear', Shoes:'--cat-shoes', Bags:'--cat-bags', Accessories:'--cat-accessories'
+  };
+  var OCCASIONS = ["Casual","Work","Evening","Weekend","Workout","Formal"];
+  var DAYS = [
+    {key:'mon',label:'Monday'},{key:'tue',label:'Tuesday'},{key:'wed',label:'Wednesday'},
+    {key:'thu',label:'Thursday'},{key:'fri',label:'Friday'},{key:'sat',label:'Saturday'},{key:'sun',label:'Sunday'}
+  ];
+
+  var state = {
+    db:null, assets:null,
+    items:new Map(), outfits:new Map(), planner:{},
+    activeTab:'closet', closetFilter:'All', closetSearch:'',
+    editingItemId:null, pendingPhotoId:null, pendingPhotoUrl:null,
+    editingOutfitId:null
+  };
+
+  function $(id){ return document.getElementById(id); }
+  function escapeHtml(s){
+    return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function catVar(cat){ return 'var(' + (CATEGORY_VAR[cat] || '--accent') + ')'; }
+  function uid(){ return 'id' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+
+  var toastTimer = null;
+  function toast(msg){
+    var el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    clearTimeout(toastTimer);
+    setTimeout(function(){ el.remove(); }, 3200);
+  }
+
+  function showOverlay(id){ $(id).hidden = false; document.body.style.overflow = 'hidden'; }
+  function hideOverlay(id){ $(id).hidden = true; document.body.style.overflow = ''; }
+
+  // ---------- thumbnails ----------
+  function thumbHtml(d, sizeClass){
+    var cat = d.category || 'Tops';
+    if (d.photoId){
+      return '<img src="/_blob/' + d.photoId + '" alt="' + escapeHtml(d.name) + '">';
+    }
+    return '<div class="placeholder ' + (sizeClass||'') + '" style="--cat:' + catVar(cat) + '"><span>' +
+      escapeHtml((d.name||'?').trim().charAt(0).toUpperCase() || '?') + '</span></div>';
+  }
+
+  // ---------- render: closet ----------
+  function renderCategoryChips(){
+    var wrap = $('categoryChips');
+    var cats = ['All'].concat(CATEGORIES);
+    wrap.innerHTML = cats.map(function(c){
+      return '<button type="button" class="filter-chip" data-cat="' + escapeHtml(c) + '" aria-pressed="' + (state.closetFilter===c) + '">' + escapeHtml(c) + '</button>';
+    }).join('');
+  }
+
+  function itemCardHtml(id, d){
+    var cat = d.category || '';
+    return (
+      '<article class="card item-card" data-id="' + id + '">' +
+        '<div class="card-media">' + thumbHtml(d) + '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-title-row">' +
+            '<h3>' + escapeHtml(d.name || 'Untitled') + '</h3>' +
+            '<button type="button" class="icon-btn card-menu-btn" data-action="edit-item" data-id="' + id + '" aria-label="Edit ' + escapeHtml(d.name||'') + '">' +
+              '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M13.5 3.5l3 3L7 16H4v-3z"/></svg>' +
+            '</button>' +
+          '</div>' +
+          '<div class="card-meta">' +
+            (cat ? '<span class="chip chip-cat" style="--cat:' + catVar(cat) + '">' + escapeHtml(cat) + '</span>' : '') +
+            (d.colorHex ? '<span class="dot" style="background:' + escapeHtml(d.colorHex) + '"></span>' : '') +
+            (d.colorName ? '<span class="muted">' + escapeHtml(d.colorName) + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  function emptyClosetHtml(){
+    var hasSomeItems = state.items.size > 0;
+    if (hasSomeItems){
+      return '<div class="empty-state">' +
+        '<div class="empty-icon"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5"/><path d="M16 16l-3.2-3.2"/></svg></div>' +
+        '<h3>No pieces match</h3><p>Try a different category or search term.</p></div>';
+    }
+    return '<div class="empty-state">' +
+      '<div class="empty-icon"><svg viewBox="0 0 48 48" width="26" height="26" fill="currentColor"><path d="M24 7a3.4 3.4 0 1 1 2.8 5.3c-.9.6-1.5 1.2-1.5 2.1v1.9l15.4 8.8c2.3 1.3 3.7 3.7 3.7 6.3 0 1.1-.9 2.1-2.1 2.1H5.7c-1.1 0-2.1-.9-2.1-2.1 0-2.6 1.4-5 3.7-6.3l15.4-8.8v-1.9c0-.9-.6-1.5-1.5-2.1A3.4 3.4 0 0 1 24 7Z"/></svg></div>' +
+      '<h3>Your closet is empty</h3><p>Add the pieces you already own — start with a favorite top or a go-to pair of shoes.</p>' +
+      '<button type="button" class="btn btn-primary btn-sm" id="emptyAddItemBtn">Add your first piece</button></div>';
+  }
+
+  function renderCloset(){
+    var grid = $('closetGrid');
+    var entries = Array.from(state.items.entries());
+    if (state.closetFilter !== 'All'){
+      entries = entries.filter(function(e){ return e[1].category === state.closetFilter; });
+    }
+    if (state.closetSearch){
+      var q = state.closetSearch.toLowerCase();
+      entries = entries.filter(function(e){
+        var d = e[1];
+        return (d.name||'').toLowerCase().indexOf(q) > -1 ||
+               (d.colorName||'').toLowerCase().indexOf(q) > -1 ||
+               (d.notes||'').toLowerCase().indexOf(q) > -1;
+      });
+    }
+    if (!entries.length){ grid.innerHTML = emptyClosetHtml(); return; }
+    grid.innerHTML = entries.map(function(e){ return itemCardHtml(e[0], e[1]); }).join('');
+  }
+
+  // ---------- render: outfits ----------
+  function outfitCollageHtml(d){
+    var ids = (d.itemIds || []).filter(function(id){ return state.items.has(id); });
+    if (!ids.length){
+      return '<div class="outfit-empty-collage"><svg viewBox="0 0 48 48" width="26" height="26" fill="currentColor"><path d="M24 7a3.4 3.4 0 1 1 2.8 5.3c-.9.6-1.5 1.2-1.5 2.1v1.9l15.4 8.8c2.3 1.3 3.7 3.7 3.7 6.3 0 1.1-.9 2.1-2.1 2.1H5.7c-1.1 0-2.1-.9-2.1-2.1 0-2.6 1.4-5 3.7-6.3l15.4-8.8v-1.9c0-.9-.6-1.5-1.5-2.1A3.4 3.4 0 0 1 24 7Z"/></svg></div>';
+    }
+    var shown = ids.slice(0,4);
+    var countClass = shown.length === 1 ? 'count-1' : (shown.length === 2 ? 'count-2' : '');
+    return '<div class="outfit-collage ' + countClass + '">' +
+      shown.map(function(id){
+        return '<div class="slot">' + thumbHtml(state.items.get(id)) + '</div>';
+      }).join('') +
+    '</div>';
+  }
+
+  function outfitCardHtml(id, d){
+    var count = (d.itemIds || []).length;
+    return (
+      '<article class="card outfit-card" data-id="' + id + '">' +
+        outfitCollageHtml(d) +
+        '<div class="card-body">' +
+          '<div class="card-title-row">' +
+            '<h3>' + escapeHtml(d.name || 'Untitled outfit') + '</h3>' +
+            '<button type="button" class="icon-btn card-menu-btn" data-action="edit-outfit" data-id="' + id + '" aria-label="Edit ' + escapeHtml(d.name||'') + '">' +
+              '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M13.5 3.5l3 3L7 16H4v-3z"/></svg>' +
+            '</button>' +
+          '</div>' +
+          '<div class="card-meta">' +
+            (d.occasion ? '<span class="chip chip-cat" style="--cat:var(--gold)">' + escapeHtml(d.occasion) + '</span>' : '') +
+            '<span class="muted">' + count + ' piece' + (count===1?'':'s') + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  function emptyOutfitsHtml(){
+    if (!state.items.size){
+      return '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="14" height="14" rx="3"/></svg></div>' +
+        '<h3>Build your closet first</h3><p>Add a few pieces on the Closet tab, then come back to put outfits together.</p></div>';
+    }
+    return '<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="14" height="14" rx="3"/></svg></div>' +
+      '<h3>No outfits yet</h3><p>Combine pieces from your closet into an outfit you can plan around.</p>' +
+      '<button type="button" class="btn btn-primary btn-sm" id="emptyAddOutfitBtn">Create outfit</button></div>';
+  }
+
+  function renderOutfits(){
+    var grid = $('outfitsGrid');
+    var entries = Array.from(state.outfits.entries());
+    if (!entries.length){ grid.innerHTML = emptyOutfitsHtml(); return; }
+    grid.innerHTML = entries.map(function(e){ return outfitCardHtml(e[0], e[1]); }).join('');
+  }
+
+  // ---------- render: planner ----------
+  function outfitPreviewHtml(d){
+    var ids = (d.itemIds || []).filter(function(id){ return state.items.has(id); }).slice(0,4);
+    var thumbs = ids.map(function(id){
+      return '<div class="planner-thumb">' + thumbHtml(state.items.get(id)) + '</div>';
+    }).join('');
+    return '<div class="planner-thumbs">' + thumbs + '</div>' +
+      '<p class="planner-outfit-name">' + escapeHtml(d.name || '') + '</p>';
+  }
+
+  function renderPlanner(){
+    var row = $('plannerRow');
+    var outfitEntries = Array.from(state.outfits.entries());
+    var todayIdx = (new Date().getDay() + 6) % 7;
+    row.innerHTML = DAYS.map(function(day, idx){
+      var outfitId = state.planner[day.key] || '';
+      var isToday = idx === todayIdx;
+      var options = '<option value="">No outfit planned</option>' +
+        outfitEntries.map(function(e){
+          return '<option value="' + e[0] + '"' + (e[0]===outfitId?' selected':'') + '>' + escapeHtml(e[1].name) + '</option>';
+        }).join('');
+      var outfit = outfitId ? state.outfits.get(outfitId) : null;
+      var preview = outfit ? outfitPreviewHtml(outfit) : '<p class="muted planner-empty">Nothing planned yet</p>';
+      return (
+        '<div class="planner-day' + (isToday ? ' is-today' : '') + '">' +
+          '<div class="planner-day-head"><span class="planner-day-name">' + day.label + '</span>' +
+            (isToday ? '<span class="today-badge">Today</span>' : '') + '</div>' +
+          '<select class="planner-select" data-day="' + day.key + '" aria-label="Outfit for ' + day.label + '">' + options + '</select>' +
+          '<div class="planner-preview">' + preview + '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function updateStats(){
+    var n = state.items.size, m = state.outfits.size;
+    $('statsLine').textContent = n + ' piece' + (n===1?'':'s') + ' cataloged · ' + m + ' outfit' + (m===1?'':'s') + ' saved';
+  }
+
+  function renderActive(){
+    updateStats();
+    if (state.activeTab === 'closet') renderCloset();
+    else if (state.activeTab === 'outfits') renderOutfits();
+    else renderPlanner();
+  }
+
+  // ---------- data layer ----------
+  function nowIso(){ return new Date().toISOString(); }
+
+  function addItem(data){
+    data.createdAt = nowIso();
+    if (state.db) return state.db.collection('items').add(data);
+    state.items.set(uid(), data);
+    renderActive();
+    return Promise.resolve();
+  }
+  function updateItem(id, data){
+    if (state.db) return state.db.doc('items/' + id).update(data);
+    state.items.set(id, Object.assign({}, state.items.get(id), data));
+    renderActive();
+    return Promise.resolve();
+  }
+  function deleteItemRec(id){
+    if (state.db) return state.db.doc('items/' + id).delete();
+    state.items.delete(id);
+    renderActive();
+    return Promise.resolve();
+  }
+
+  function addOutfit(data){
+    data.createdAt = nowIso();
+    if (state.db) return state.db.collection('outfits').add(data);
+    state.outfits.set(uid(), data);
+    renderActive();
+    return Promise.resolve();
+  }
+  function updateOutfit(id, data){
+    if (state.db) return state.db.doc('outfits/' + id).update(data);
+    state.outfits.set(id, Object.assign({}, state.outfits.get(id), data));
+    renderActive();
+    return Promise.resolve();
+  }
+  function deleteOutfitRec(id){
+    if (state.db) return state.db.doc('outfits/' + id).delete();
+    state.outfits.delete(id);
+    renderActive();
+    return Promise.resolve();
+  }
+
+  function setPlannerDay(dayKey, outfitId){
+    var next = Object.assign({}, state.planner);
+    if (outfitId) next[dayKey] = outfitId; else delete next[dayKey];
+    if (state.db) return state.db.doc('planner/week').set(next);
+    state.planner = next;
+    renderActive();
+    return Promise.resolve();
+  }
+
+  // ---------- subscriptions ----------
+  function subscribeAll(){
+    state.db.collection('items').onSnapshot(function(snap){
+      var map = new Map();
+      snap.docs.forEach(function(doc){ map.set(doc.id, doc.data()); });
+      state.items = map;
+      renderActive();
+    }, function(err){ console.error('items snapshot', err); toast('Could not load your closet.'); });
+
+    state.db.collection('outfits').onSnapshot(function(snap){
+      var map = new Map();
+      snap.docs.forEach(function(doc){ map.set(doc.id, doc.data()); });
+      state.outfits = map;
+      renderActive();
+    }, function(err){ console.error('outfits snapshot', err); toast('Could not load your outfits.'); });
+
+    state.db.doc('planner/week').onSnapshot(function(snap){
+      state.planner = snap.exists ? (snap.data() || {}) : {};
+      renderActive();
+    }, function(err){ console.error('planner snapshot', err); toast('Could not load your planner.'); });
+  }
+
+  // ---------- item modal ----------
+  function updatePhotoPreview(){
+    var el = $('itemPhotoPreview');
+    if (state.pendingPhotoUrl){
+      el.innerHTML = '<img src="' + state.pendingPhotoUrl + '" alt="">';
+    } else {
+      el.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.3"/></svg>';
+    }
+  }
+
+  function openItemModal(id){
+    state.editingItemId = id || null;
+    var d = id ? state.items.get(id) : null;
+    state.pendingPhotoId = d ? (d.photoId || null) : null;
+    state.pendingPhotoUrl = state.pendingPhotoId ? ('/_blob/' + state.pendingPhotoId) : null;
+
+    $('itemModalTitle').textContent = id ? 'Edit piece' : 'Add a piece';
+    $('itemName').value = d ? (d.name || '') : '';
+    $('itemCategory').value = d ? (d.category || CATEGORIES[0]) : CATEGORIES[0];
+    $('itemColorName').value = d ? (d.colorName || '') : '';
+    $('itemColorHex').value = d ? (d.colorHex || '#BC3865') : '#BC3865';
+    $('itemNotes').value = d ? (d.notes || '') : '';
+    $('itemDeleteBtn').hidden = !id;
+    $('itemPhotoHint').textContent = state.assets ? 'JPG or PNG, up to 20MB' : 'Photos unavailable in this preview';
+    $('itemPhotoBtn').disabled = !state.assets;
+    updatePhotoPreview();
+    resetDangerButton('itemDeleteBtn', 'Remove');
+    showOverlay('itemModalOverlay');
+    $('itemName').focus();
+  }
+
+  function closeItemModal(){ hideOverlay('itemModalOverlay'); }
+
+  // ---------- outfit modal ----------
+  function buildItemPicker(selectedIds){
+    var byCat = {};
+    CATEGORIES.forEach(function(c){ byCat[c] = []; });
+    Array.from(state.items.entries()).forEach(function(e){
+      var cat = e[1].category;
+      if (!byCat[cat]) byCat[cat] = [];
+      byCat[cat].push(e);
+    });
+    var html = '';
+    CATEGORIES.forEach(function(cat){
+      var list = byCat[cat];
+      if (!list || !list.length) return;
+      html += '<div class="picker-group"><h4>' + escapeHtml(cat) + '</h4><div class="picker-items">';
+      html += list.map(function(e){
+        var id = e[0], d = e[1];
+        var checked = selectedIds.indexOf(id) > -1 ? ' checked' : '';
+        return '<label class="picker-item">' +
+          '<input type="checkbox" value="' + id + '"' + checked + '>' +
+          thumbHtml(d, 'placeholder-sm') +
+          '<span>' + escapeHtml(d.name) + '</span>' +
+        '</label>';
+      }).join('');
+      html += '</div></div>';
+    });
+    if (!html) html = '<p class="muted" style="font-size:0.85rem;">Add pieces to your closet first, then come back to build an outfit.</p>';
+    return html;
+  }
+
+  function openOutfitModal(id){
+    state.editingOutfitId = id || null;
+    var d = id ? state.outfits.get(id) : null;
+    $('outfitModalTitle').textContent = id ? 'Edit outfit' : 'Create an outfit';
+    $('outfitName').value = d ? (d.name || '') : '';
+    $('outfitOccasion').value = d ? (d.occasion || OCCASIONS[0]) : OCCASIONS[0];
+    $('outfitNotes').value = d ? (d.notes || '') : '';
+    $('outfitItemPicker').innerHTML = buildItemPicker(d ? (d.itemIds || []) : []);
+    $('outfitDeleteBtn').hidden = !id;
+    resetDangerButton('outfitDeleteBtn', 'Delete');
+    showOverlay('outfitModalOverlay');
+    $('outfitName').focus();
+  }
+  function closeOutfitModal(){ hideOverlay('outfitModalOverlay'); }
+
+  // two-step danger confirm (avoids blocked native confirm() in sandboxed frame)
+  function resetDangerButton(id, label){
+    var btn = $(id);
+    btn.textContent = label;
+    btn.dataset.armed = '';
+  }
+  function armDangerButton(id, label){
+    var btn = $(id);
+    if (btn.dataset.armed === '1'){
+      return true;
+    }
+    btn.dataset.armed = '1';
+    btn.textContent = 'Click again to confirm';
+    setTimeout(function(){ if (btn.dataset.armed === '1') resetDangerButton(id, label); }, 2800);
+    return false;
+  }
+
+  function setBusy(btn, busy, busyLabel, idleLabel){
+    btn.disabled = busy;
+    btn.textContent = busy ? busyLabel : idleLabel;
+  }
+
+  // ---------- wire up ----------
+  function wireUI(){
+    CATEGORIES.forEach(function(c){
+      var opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+      $('itemCategory').appendChild(opt);
+    });
+    OCCASIONS.forEach(function(o){
+      var opt = document.createElement('option'); opt.value = o; opt.textContent = o;
+      $('outfitOccasion').appendChild(opt);
+    });
+    renderCategoryChips();
+
+    $('tabs').addEventListener('click', function(e){
+      var btn = e.target.closest('.tab');
+      if (!btn) return;
+      state.activeTab = btn.dataset.tab;
+      document.querySelectorAll('.tab').forEach(function(t){ t.setAttribute('aria-selected', t === btn ? 'true' : 'false'); });
+      document.querySelectorAll('.panel').forEach(function(p){ p.hidden = p.id !== 'panel-' + state.activeTab; });
+      renderActive();
+    });
+
+    $('categoryChips').addEventListener('click', function(e){
+      var chip = e.target.closest('.filter-chip');
+      if (!chip) return;
+      state.closetFilter = chip.dataset.cat;
+      renderCategoryChips();
+      renderCloset();
+    });
+
+    $('closetSearch').addEventListener('input', function(e){
+      state.closetSearch = e.target.value.trim();
+      renderCloset();
+    });
+
+    $('closetGrid').addEventListener('click', function(e){
+      if (e.target.closest('#emptyAddItemBtn')){ openItemModal(null); return; }
+      var editBtn = e.target.closest('[data-action="edit-item"]');
+      if (editBtn){ openItemModal(editBtn.dataset.id); return; }
+      var card = e.target.closest('.item-card');
+      if (card){ openItemModal(card.dataset.id); }
+    });
+
+    $('outfitsGrid').addEventListener('click', function(e){
+      if (e.target.closest('#emptyAddOutfitBtn')){ openOutfitModal(null); return; }
+      var editBtn = e.target.closest('[data-action="edit-outfit"]');
+      if (editBtn){ openOutfitModal(editBtn.dataset.id); return; }
+      var card = e.target.closest('.outfit-card');
+      if (card){ openOutfitModal(card.dataset.id); }
+    });
+
+    $('plannerRow').addEventListener('change', function(e){
+      var sel = e.target.closest('.planner-select');
+      if (!sel) return;
+      setPlannerDay(sel.dataset.day, sel.value || null).catch(function(err){
+        console.error(err); toast('Could not update your planner.');
+      });
+    });
+
+    $('btnAddItem').addEventListener('click', function(){ openItemModal(null); });
+    $('btnAddOutfit').addEventListener('click', function(){ openOutfitModal(null); });
+
+    // item modal
+    $('itemModalClose').addEventListener('click', closeItemModal);
+    $('itemCancelBtn').addEventListener('click', closeItemModal);
+    $('itemModalOverlay').addEventListener('click', function(e){ if (e.target.id === 'itemModalOverlay') closeItemModal(); });
+    $('itemPhotoBtn').addEventListener('click', function(){ $('itemPhotoInput').click(); });
+    $('itemPhotoInput').addEventListener('change', function(e){
+      var file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (!state.assets){ toast('Open the published app to add photos.'); e.target.value=''; return; }
+      var btn = $('itemPhotoBtn');
+      setBusy(btn, true, 'Uploading…', 'Add photo');
+      state.assets.upload(file).then(function(res){
+        state.pendingPhotoId = res.id;
+        state.pendingPhotoUrl = res.url;
+        updatePhotoPreview();
+      }).catch(function(err){
+        console.error(err);
+        toast('Could not upload that photo.');
+      }).finally(function(){
+        setBusy(btn, false, 'Uploading…', 'Add photo');
+        e.target.value = '';
+      });
+    });
+
+    $('itemForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      var name = $('itemName').value.trim();
+      if (!name){ toast('Give this piece a name.'); return; }
+      var data = {
+        name: name,
+        category: $('itemCategory').value,
+        colorName: $('itemColorName').value.trim(),
+        colorHex: $('itemColorHex').value,
+        notes: $('itemNotes').value.trim(),
+        photoId: state.pendingPhotoId || null
+      };
+      var btn = $('itemSaveBtn');
+      setBusy(btn, true, 'Saving…', 'Save piece');
+      var op = state.editingItemId ? updateItem(state.editingItemId, data) : addItem(data);
+      op.then(function(){
+        closeItemModal();
+      }).catch(function(err){
+        console.error(err); toast('Could not save this piece.');
+      }).finally(function(){
+        setBusy(btn, false, 'Saving…', 'Save piece');
+      });
+    });
+
+    $('itemDeleteBtn').addEventListener('click', function(){
+      if (!armDangerButton('itemDeleteBtn', 'Remove')) return;
+      var id = state.editingItemId;
+      if (!id) return;
+      deleteItemRec(id).then(closeItemModal).catch(function(err){
+        console.error(err); toast('Could not remove this piece.');
+      });
+    });
+
+    // outfit modal
+    $('outfitModalClose').addEventListener('click', closeOutfitModal);
+    $('outfitCancelBtn').addEventListener('click', closeOutfitModal);
+    $('outfitModalOverlay').addEventListener('click', function(e){ if (e.target.id === 'outfitModalOverlay') closeOutfitModal(); });
+
+    $('outfitForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      var name = $('outfitName').value.trim();
+      if (!name){ toast('Give this outfit a name.'); return; }
+      var itemIds = Array.from($('outfitItemPicker').querySelectorAll('input[type="checkbox"]:checked')).map(function(i){ return i.value; });
+      if (!itemIds.length){ toast('Pick at least one piece.'); return; }
+      var data = {
+        name: name,
+        occasion: $('outfitOccasion').value,
+        notes: $('outfitNotes').value.trim(),
+        itemIds: itemIds
+      };
+      var btn = $('outfitSaveBtn');
+      setBusy(btn, true, 'Saving…', 'Save outfit');
+      var op = state.editingOutfitId ? updateOutfit(state.editingOutfitId, data) : addOutfit(data);
+      op.then(function(){
+        closeOutfitModal();
+      }).catch(function(err){
+        console.error(err); toast('Could not save this outfit.');
+      }).finally(function(){
+        setBusy(btn, false, 'Saving…', 'Save outfit');
+      });
+    });
+
+    $('outfitDeleteBtn').addEventListener('click', function(){
+      if (!armDangerButton('outfitDeleteBtn', 'Delete')) return;
+      var id = state.editingOutfitId;
+      if (!id) return;
+      deleteOutfitRec(id).then(closeOutfitModal).catch(function(err){
+        console.error(err); toast('Could not delete this outfit.');
+      });
+    });
+
+    document.addEventListener('keydown', function(e){
+      if (e.key !== 'Escape') return;
+      if (!$('itemModalOverlay').hidden) closeItemModal();
+      if (!$('outfitModalOverlay').hidden) closeOutfitModal();
+    });
+  }
+
+  // ---------- boot ----------
+  function boot(){
+    wireUI();
+    renderActive();
+
+    var claudeRef = window.claude;
+    if (!claudeRef || !claudeRef.use){
+      toast('Working in local preview — open the published link to save your closet.');
+      return;
+    }
+    Promise.all([claudeRef.use('db'), claudeRef.use('assets')]).then(function(res){
+      state.db = res[0];
+      state.assets = res[1];
+      if (!state.db){
+        toast('Working in local preview — open the published link to save your closet.');
+        return;
+      }
+      subscribeAll();
+    }).catch(function(err){
+      console.error('capability init', err);
+    });
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
