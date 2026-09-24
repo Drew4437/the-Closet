@@ -166,6 +166,14 @@
   }
   .dropzone:hover, .dropzone.drag{border-color:var(--brass); color:var(--ink);}
   .dropzone strong{color:var(--ink); font-weight:600;}
+  .receipt-row{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:-16px 0 26px;}
+  .receipt-hint{font-size:12px; color:var(--muted);}
+  .no-photo{width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:10.5px; color:var(--muted); text-align:center; padding:6px; background:repeating-linear-gradient(45deg, var(--card), var(--card) 6px, var(--card-line) 6px, var(--card-line) 7px);}
+
+  .outfit-board-wrap{margin:18px 0;}
+  .outfit-board-wrap img{max-width:100%; border-radius:6px; border:1px solid var(--card-line); display:block;}
+  .board-actions{margin-top:10px; display:flex; gap:8px;}
+  .board-loading{font-size:12.5px; color:var(--muted); display:flex; align-items:center; gap:8px;}
 
   /* ---------- closet grid ---------- */
   .tabs{display:flex; gap:4px; flex-wrap:wrap; margin-bottom:22px; border-bottom:1px solid var(--card-line); padding-bottom:0;}
@@ -296,6 +304,12 @@
       </div>
       <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/gif" multiple style="display:none">
 
+      <div class="receipt-row">
+        <button class="btn ghost small" id="receiptBtn">+ Add items from a receipt or order confirmation</button>
+        <span class="receipt-hint">I'll read the retailer, item names, prices and date — you'll add a real photo once the piece arrives.</span>
+      </div>
+      <input type="file" id="receiptInput" accept="image/png,image/jpeg,image/webp,image/gif" multiple style="display:none">
+
       <div class="tabs" id="tabs"></div>
       <div class="grid" id="grid"></div>
       <div class="empty" id="emptyMsg" style="display:none;">No items yet in this category — upload a few photos to get started.</div>
@@ -373,7 +387,7 @@ const CATEGORIES = ["All","Tops","Bottoms","Dresses","Outerwear","Shoes","Bags",
 const FORMALITY = ["Casual","Polished Casual","Workwear","Cocktail","Evening","Vacation"];
 const SEASONS = ["Spring","Summer","Fall","Winter","Year-round"];
 
-let db=null, assets=null, sample=null;
+let db=null, assets=null, sample=null, downloads=null;
 let items=[]; // cached from onSnapshot
 let currentTab="All";
 let currentOutfitPick=null;
@@ -403,6 +417,7 @@ document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
     db = await claude.use('db');
     assets = await claude.use('assets');
     sample = await claude.use('sample');
+    downloads = await claude.use('downloads');
   }catch(e){}
 
   if(!db || !assets){
@@ -414,6 +429,7 @@ document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
 
   buildTabs();
   wireUpload();
+  wireReceiptUpload();
   wireOverlay();
   document.getElementById('btn-getoutfit').addEventListener('click', getOutfit);
   document.getElementById('btn-refresh-notes').addEventListener('click', updateNotes);
@@ -446,8 +462,9 @@ function renderGrid(){
   document.getElementById('emptyMsg').style.display = list.length? 'none':'block';
   grid.innerHTML = list.map(i=>`
     <div class="card ${i.status==='analyzing'?'analyzing':''}" data-id="${i.id}">
-      ${i.imageUrl?`<img class="thumb" src="${i.imageUrl}" loading="lazy">`:`<div class="thumb"></div>`}
+      ${i.imageUrl?`<img class="thumb" src="${i.imageUrl}" loading="lazy">`:`<div class="thumb no-photo">No photo yet</div>`}
       ${i.status==='analyzing'?'<div class="badge">Reading photo…</div>':''}
+      ${i.sourceReceipt?'<div class="badge" style="background:rgba(160,124,46,.85);">From receipt</div>':''}
       <div class="meta">
         <div class="cat">${esc(i.category||'Uncategorized')}</div>
         <div class="sub">${esc(i.subtype||'Untitled item')}</div>
@@ -544,6 +561,73 @@ function sanitizeItem(d){
   return out;
 }
 
+// ---------- receipt / invoice upload ----------
+function wireReceiptUpload(){
+  const btn=document.getElementById('receiptBtn'), ri=document.getElementById('receiptInput');
+  btn.addEventListener('click', ()=>ri.click());
+  ri.addEventListener('change', ()=>{
+    Array.from(ri.files).filter(f=>f.type.startsWith('image/')).forEach(uploadReceipt);
+    ri.value='';
+  });
+}
+
+async function uploadReceipt(file){
+  if(!db || !assets || !sample){ toast('Receipt reading needs Claude access in this view.'); return; }
+  toast('Reading receipt…');
+  let receiptDoc;
+  try{
+    const up = await assets.upload(file);
+    receiptDoc = await db.collection('receipts').add({
+      assetId: up.id, imageUrl: up.url, status:'reading', createdAt:new Date().toISOString()
+    });
+
+    const prompt = `This photo is a receipt, packing slip, or order-confirmation screenshot for a clothing/accessory purchase.
+Read it and reply with ONLY this JSON shape, no other text:
+{
+ "retailer": "store or brand name, or \\"\\" if unclear",
+ "orderDate": "YYYY-MM-DD if visible, else \\"\\"",
+ "items": [
+   {
+     "description": "the item name/description as printed",
+     "price": "the price as printed, including currency symbol, or \\"\\"",
+     "category": one of ["Tops","Bottoms","Dresses","Outerwear","Shoes","Bags","Accessories","Jewelry","Activewear","Other"],
+     "colorGuess": "color if stated or implied, else \\"\\"",
+     "brandGuess": "brand if stated or implied, else \\"\\""
+   }
+ ]
+}
+Only include actual apparel/accessory line items — leave out shipping, tax, gift wrap, discounts, or subtotal/total lines. If nothing on the page looks like a clothing/accessory purchase, return an empty items array.`;
+
+    const data = await sample.json(prompt, {images:[file], modelTier:'default'});
+    const lineItems = Array.isArray(data.items) ? data.items.slice(0,25) : [];
+    const createdIds=[];
+    for(const li of lineItems){
+      if(!li.description) continue;
+      const ref = await db.collection('items').add({
+        status:'ready',
+        category: CATEGORIES.includes(li.category)? li.category : 'Other',
+        subtype: String(li.description).slice(0,200),
+        colors: li.colorGuess ? [String(li.colorGuess).slice(0,60)] : [],
+        brand: li.brandGuess ? String(li.brandGuess).slice(0,120) : '',
+        purchasePrice: li.price ? String(li.price).slice(0,40) : '',
+        purchasedFrom: data.retailer ? String(data.retailer).slice(0,120) : '',
+        purchaseDate: data.orderDate || '',
+        sourceReceipt: true, receiptId: receiptDoc.id,
+        imageUrl:null, assetId:null,
+        createdAt:new Date().toISOString(), wearCount:0, lastWorn:null,
+        stylingNotes:'Details pulled from a receipt — add a real photo once the piece arrives to get full styling notes.'
+      });
+      createdIds.push(ref.id);
+    }
+    await receiptDoc.update({status:'done', retailer:data.retailer||'', orderDate:data.orderDate||'', itemIds:createdIds});
+    toast(createdIds.length ? `Added ${createdIds.length} item${createdIds.length===1?'':'s'} from ${data.retailer||'your receipt'}.` : "Didn't find any clothing line items on that receipt.");
+  }catch(e){
+    console.error(e);
+    toast("Couldn't read that receipt — try a clearer photo or crop closer to the item list.");
+    if(receiptDoc){ try{ await receiptDoc.update({status:'failed'}); }catch(_){} }
+  }
+}
+
 // ---------- modal ----------
 function wireOverlay(){
   document.getElementById('overlay').addEventListener('click', e=>{
@@ -558,13 +642,21 @@ function openModal(id){
   const box = document.getElementById('modalBox');
   box.innerHTML = `
     <button class="closebtn" id="mClose">&times;</button>
-    <div class="photo">${i.imageUrl?`<img src="${i.imageUrl}">`:''}</div>
+    <div class="photo">
+      ${i.imageUrl?`<img src="${i.imageUrl}">`:`
+        <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center;">
+          <span style="font-size:12.5px;color:var(--muted);">No photo yet</span>
+          <button class="btn ghost small" id="mAddPhoto">Add a photo</button>
+          <input type="file" id="mPhotoInput" accept="image/png,image/jpeg,image/webp" style="display:none">
+        </div>`}
+    </div>
     <div class="detail">
       <span class="pill">${esc(i.category||'')}</span>
       ${i.formality?`<span class="pill">${esc(i.formality)}</span>`:''}
       ${i.seasonality?`<span class="pill">${esc(i.seasonality)}</span>`:''}
       <h2 style="margin-top:12px;">${esc(i.subtype||'Untitled item')}</h2>
       ${i.brand?`<div style="color:var(--muted); font-size:13px;">${esc(i.brand)}</div>`:''}
+      ${i.sourceReceipt?`<div style="color:var(--muted); font-size:12px; margin-top:4px;">${esc(i.purchasedFrom||'Purchase')}${i.purchasePrice?` · ${esc(i.purchasePrice)}`:''}${i.purchaseDate?` · ${esc(i.purchaseDate)}`:''}</div>`:''}
 
       <div class="editgrid" style="margin-top:18px;">
         <div><label class="field">Category</label><select id="e-category">${CATEGORIES.filter(c=>c!=='All').map(c=>`<option ${c===i.category?'selected':''}>${c}</option>`).join('')}</select></div>
@@ -603,6 +695,23 @@ function openModal(id){
   document.getElementById('mWorn').onclick = ()=>markWorn(i.id);
   document.getElementById('mReanalyze').onclick = ()=>reanalyze(i.id);
   document.getElementById('mDelete').onclick = ()=>deleteItem(i.id);
+  const addPhotoBtn = document.getElementById('mAddPhoto');
+  if(addPhotoBtn){
+    const pi = document.getElementById('mPhotoInput');
+    addPhotoBtn.onclick = ()=>pi.click();
+    pi.onchange = async ()=>{
+      const file = pi.files[0];
+      if(!file) return;
+      toast('Adding photo…');
+      try{
+        const up = await assets.upload(file);
+        const ref = db.collection('items').doc(i.id);
+        await ref.update({assetId:up.id, imageUrl:up.url, status:'analyzing'});
+        await analyzeItem(ref, file);
+        toast('Photo added.'); closeModal();
+      }catch(e){ console.error(e); toast("Couldn't add that photo."); }
+    };
+  }
 }
 
 async function saveModal(id){
@@ -719,6 +828,9 @@ function renderOutfit(data, ctx){
       <div class="outfit-card">
         <h3>Today's outfit</h3>
         <div class="outfit-items">${(b.itemIds||[]).map(itemChip).join('')}</div>
+        <div class="outfit-board-wrap" id="outfit-board-wrap">
+          <div class="board-loading">Laying out the outfit board <span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        </div>
         <dl class="outfit-notes">
           <dt>Why it works</dt><dd>${esc(b.why||'')}</dd>
           <dt>Layering plan</dt><dd>${esc(b.layeringPlan||'')}</dd>
@@ -734,6 +846,103 @@ function renderOutfit(data, ctx){
       </div>
     </div>`;
   document.getElementById('btn-worethis').onclick = ()=>confirmWorn(b.itemIds||[]);
+  buildOutfitBoard(b.itemIds||[], ctx);
+}
+
+// ---------- outfit board (real-photo flat-lay collage) ----------
+function loadImg(src){
+  return new Promise((resolve)=>{
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=()=>resolve(img);
+    img.onerror=()=>resolve(null);
+    img.src=src;
+  });
+}
+function drawCover(ctx,img,x,y,w,h,radius){
+  ctx.save();
+  roundRectPath(ctx,x,y,w,h,radius);
+  ctx.clip();
+  const ir = img.width/img.height, br = w/h;
+  let sw,sh,sx,sy;
+  if(ir>br){ sh=img.height; sw=sh*br; sy=0; sx=(img.width-sw)/2; }
+  else{ sw=img.width; sh=sw/br; sx=0; sy=(img.height-sh)/2; }
+  ctx.drawImage(img, sx,sy,sw,sh, x,y,w,h);
+  ctx.restore();
+}
+function roundRectPath(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+async function buildOutfitBoard(itemIds, ctx){
+  const wrap = document.getElementById('outfit-board-wrap');
+  if(!wrap) return;
+  const pieces = itemIds.map(id=>items.find(x=>x.id===id)).filter(it=>it && it.imageUrl);
+  if(!pieces.length){ wrap.innerHTML=''; return; }
+
+  try{ await document.fonts.load('italic 500 40px Fraunces'); }catch(e){}
+  const W=1000, H=1250, pad=44, gap=16;
+  const canvas=document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  const c=canvas.getContext('2d');
+
+  const bg = getComputedStyle(document.body).getPropertyValue('--card').trim() || '#FBF9F3';
+  const ink = getComputedStyle(document.body).getPropertyValue('--ink').trim() || '#1C2331';
+  const muted = getComputedStyle(document.body).getPropertyValue('--muted').trim() || '#746C5B';
+  const line = getComputedStyle(document.body).getPropertyValue('--card-line').trim() || '#E2DBC8';
+  c.fillStyle=bg; c.fillRect(0,0,W,H);
+  c.strokeStyle=line; c.lineWidth=2; c.strokeRect(1,1,W-2,H-2);
+
+  const headerH=96;
+  c.fillStyle=ink;
+  c.font='italic 500 34px Fraunces, Georgia, serif';
+  c.textBaseline='alphabetic';
+  const title = ctx && ctx.plans ? ctx.plans : "Today's outfit";
+  c.fillText(title.length>44?title.slice(0,44)+'…':title, pad, 58);
+  c.fillStyle=muted; c.font='500 14px "Work Sans", sans-serif';
+  const sub=[ctx?.date, ctx?.location, ctx?.vibe].filter(Boolean).join('   ·   ');
+  c.fillText(sub, pad, 82);
+
+  const imgs = await Promise.all(pieces.map(p=>loadImg(p.imageUrl)));
+  const valid = pieces.map((p,i)=>({p,img:imgs[i]})).filter(v=>v.img);
+  if(!valid.length){ wrap.innerHTML=''; return; }
+
+  const gridTop = headerH+20, gridBottom=H-56, gridH=gridBottom-gridTop, gridW=W-pad*2;
+  const n=valid.length;
+  let cols = n<=2?n: n<=4?2:3;
+  let rows = Math.ceil(n/cols);
+  const cellW=(gridW-(cols-1)*gap)/cols, cellH=(gridH-(rows-1)*gap)/rows;
+
+  valid.forEach((v,idx)=>{
+    const col=idx%cols, row=Math.floor(idx/cols);
+    const x=pad+col*(cellW+gap), y=gridTop+row*(cellH+gap);
+    c.fillStyle='#ffffff'; roundRectPath(c,x,y,cellW,cellH,10); c.fill();
+    drawCover(c, v.img, x+8, y+8, cellW-16, cellH-40, 8);
+    c.fillStyle=ink; c.font='600 13px "Work Sans", sans-serif';
+    const label = (v.p.subtype||v.p.category||'').slice(0,28);
+    c.fillText(label, x+10, y+cellH-16);
+  });
+
+  const dataUrl = canvas.toDataURL('image/png');
+  wrap.innerHTML = `<img src="${dataUrl}" alt="Outfit board">
+    <div class="board-actions">
+      <button class="btn ghost small" id="btn-download-board">Download outfit board</button>
+    </div>`;
+  document.getElementById('btn-download-board').onclick = async ()=>{
+    canvas.toBlob(async (blob)=>{
+      try{
+        const dl = downloads || (downloads = await claude.use('downloads'));
+        if(dl){ await dl.save({filename:`outfit-${(ctx?.date)||''}.png`, data: blob}); }
+        else { const a=document.createElement('a'); a.href=dataUrl; a.download='outfit.png'; a.click(); }
+      }catch(e){ toast("Couldn't offer the download here."); }
+    }, 'image/png');
+  };
 }
 
 async function confirmWorn(ids){
