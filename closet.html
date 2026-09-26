@@ -127,7 +127,15 @@
   .profile-pill[data-pid="dylan"] .profile-avatar{background:var(--clay);}
   .scope-toggle{display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted); padding:2px 8px; cursor:pointer;}
   .scope-toggle input{width:auto; margin:0;}
-  @media (max-width:760px){ .profile-picker{display:none;} }
+  @media (max-width:760px){
+    .profile-picker{margin-bottom:10px;}
+    .profile-label{display:none;}
+    .profile-pill span:not(.profile-avatar){display:none;}
+    .profile-pill{justify-content:center; padding:6px;}
+    .scope-toggle span{display:none;}
+    .scope-toggle{justify-content:center; padding:6px; border-radius:var(--radius);}
+    .scope-toggle input{width:16px; height:16px;}
+  }
 
   .owner-tag{
     position:absolute; bottom:8px; left:8px; background:rgba(251,249,243,.92); color:var(--ink);
@@ -149,6 +157,16 @@
   .chooser-card:hover{border-color:var(--brass);}
   .chooser-card .profile-avatar{width:52px; height:52px; font-size:20px;}
   .chooser-card span{font-size:14.5px; font-weight:600; color:var(--ink);}
+
+  .dupe-modal{background:var(--bone); border-radius:8px; max-width:520px; width:100%; padding:26px; margin:5vh 20px;}
+  .dupe-modal h2{font-size:19px; font-weight:500; margin:0 0 6px;}
+  .dupe-modal p{font-size:13.5px; color:var(--muted); margin:0 0 18px; line-height:1.5;}
+  .dupe-compare{display:flex; gap:16px; margin-bottom:22px;}
+  .dupe-side{flex:1; text-align:center;}
+  .dupe-side img{width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:6px; border:1px solid var(--card-line); display:block;}
+  .dupe-side .no-photo{aspect-ratio:3/4; border-radius:6px;}
+  .dupe-side .lbl{font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:8px 0 3px;}
+  .dupe-side .nm{font-size:13px; font-weight:600;}
 
   main{flex:1; min-width:0; padding:36px 44px 80px; max-width:1180px;}
   @media (max-width: 760px){
@@ -218,6 +236,11 @@
 
   /* ---------- closet grid ---------- */
   .tabs{display:flex; gap:4px; flex-wrap:wrap; margin-bottom:22px; border-bottom:1px solid var(--card-line); padding-bottom:0;}
+  @media (max-width:600px){
+    .tabs{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+    .tabs::-webkit-scrollbar{display:none;}
+    .tab{flex-shrink:0;}
+  }
   .tab{
     padding:8px 14px; font-size:13px; color:var(--muted); cursor:pointer; border:none; background:none;
     border-bottom:2px solid transparent; margin-bottom:-1px; font-family:inherit;
@@ -252,6 +275,11 @@
     display:grid; grid-template-columns:280px 1fr; gap:0; overflow:hidden; margin-bottom:6vh;
   }
   @media (max-width:640px){ .modal{grid-template-columns:1fr;} }
+  @media (max-width:480px){
+    .editgrid{grid-template-columns:1fr;}
+    .modal .photo{min-height:0; max-height:38vh;}
+    .modal .detail{padding:20px 16px 18px;}
+  }
   .modal .photo{background:var(--card-line); min-height:220px;}
   .modal .photo img{width:100%; height:100%; object-fit:cover; display:block;}
   .modal .detail{padding:26px 26px 22px; max-height:90vh; overflow-y:auto;}
@@ -306,6 +334,30 @@
 
   .toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--bone); padding:10px 18px; border-radius:20px; font-size:13px; z-index:100; opacity:0; transition:opacity .25s; pointer-events:none;}
   .toast.show{opacity:1;}
+
+  /* ---------- calendar ---------- */
+  .cal-nav{display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:16px;}
+  .cal-month-label{font-family:"Fraunces",serif; font-size:19px; font-weight:500; min-width:170px; text-align:center;}
+  .cal-weekdays{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; text-align:center; margin-bottom:6px;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; max-width:700px;}
+  .cal-day{
+    aspect-ratio:1; border:1px solid var(--card-line); border-radius:6px; background:var(--card);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;
+    font-size:12.5px; color:var(--muted); position:relative; overflow:hidden; padding:4px;
+  }
+  .cal-day.empty{visibility:hidden; cursor:default;}
+  .cal-day.today{border-color:var(--brass); border-width:2px;}
+  .cal-day.has-outfit{padding:0;}
+  .cal-day.has-outfit img{width:100%; height:100%; object-fit:cover; opacity:.55;}
+  .cal-day.has-outfit .daynum{position:absolute; top:4px; left:6px; color:#fff; font-weight:700; text-shadow:0 1px 3px rgba(0,0,0,.6); font-size:12px;}
+  .cal-day:hover{border-color:var(--brass);}
+  .cal-day-detail-card{background:var(--card); border:1px solid var(--card-line); border-radius:8px; padding:22px; margin-top:20px; max-width:700px;}
+  .cal-day-detail-card h3{margin:0 0 4px; font-size:17px; font-weight:500;}
+  .cal-day-detail-card .meta{font-size:12.5px; color:var(--muted); margin-bottom:14px;}
+  .cal-search-row{background:var(--card); border:1px solid var(--card-line); border-radius:6px; padding:14px 16px; margin-bottom:12px; cursor:pointer;}
+  .cal-search-row:hover{border-color:var(--brass);}
+  .cal-search-row .d{font-weight:600; font-size:13.5px;}
+  .cal-search-row .p{font-size:12.5px; color:var(--muted); margin-top:2px;}
 </style>
 </head>
 <body>
@@ -317,7 +369,7 @@
     <div class="profile-picker">
       <div class="profile-label">Closet for</div>
       <div class="profile-pills" id="profilePills"></div>
-      <label class="scope-toggle"><input type="checkbox" id="scopeToggle"> <span>See whole household</span></label>
+      <label class="scope-toggle" title="See whole household"><input type="checkbox" id="scopeToggle"> <span>See whole household</span></label>
     </div>
 
     <button class="navbtn active" data-view="closet">
@@ -327,6 +379,10 @@
     <button class="navbtn" data-view="today">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
       <span class="label">Today</span>
+    </button>
+    <button class="navbtn" data-view="calendar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      <span class="label">Calendar</span>
     </button>
     <button class="navbtn" data-view="notes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l3 3v15a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
@@ -378,6 +434,10 @@
       </div>
 
       <div class="todayform">
+        <div class="field-row">
+          <label class="field">Tell me about today, in your own words (optional)</label>
+          <textarea id="f-freeform" placeholder="e.g. Heading into the city for a client lunch then straight to Dylan's soccer game after — want to feel put-together but need to be able to run around a field in the same outfit." style="min-height:70px;"></textarea>
+        </div>
         <div class="two-col">
           <div class="field-row"><label class="field">Location</label><input type="text" id="f-location" placeholder="e.g. New York City"></div>
           <div class="field-row"><label class="field">Date</label><input type="date" id="f-date"></div>
@@ -396,6 +456,34 @@
 
       <div id="today-thinking" class="thinking" style="display:none;">Thinking through your closet <span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
       <div id="today-result"></div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="view" id="view-calendar">
+      <div class="pagehead">
+        <div>
+          <h1>Outfit Calendar</h1>
+          <p>What was actually worn, day by day — only outfits you confirmed with "I wore this" show up here.</p>
+        </div>
+      </div>
+
+      <input type="text" id="cal-search" placeholder="Search by date, plans, vibe, or item name…" style="max-width:420px; margin-bottom:22px;">
+
+      <div id="cal-search-results"></div>
+
+      <div id="cal-grid-wrap">
+        <div class="cal-nav">
+          <button class="btn ghost small" id="cal-prev">‹</button>
+          <div class="cal-month-label" id="cal-month-label"></div>
+          <button class="btn ghost small" id="cal-next">›</button>
+        </div>
+        <div class="cal-weekdays">
+          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+      <div id="cal-day-detail"></div>
     </section>
 
     <!-- NOTES -->
@@ -463,6 +551,11 @@
   <div class="modal" id="modalBox"></div>
 </div>
 
+<!-- duplicate warning -->
+<div class="overlay" id="dupeOverlay">
+  <div class="dupe-modal" id="dupeModalBox"></div>
+</div>
+
 <!-- profile chooser (first run / switch) -->
 <div class="chooser-overlay" id="chooserOverlay">
   <h1 class="serif">Who's getting dressed?</h1>
@@ -489,8 +582,10 @@ try{ viewScope = localStorage.getItem('closet_scope') || 'mine'; }catch(e){}
 
 let isOwnerViewer=false, viewerEmail=null;
 
-let db=null, assets=null, sample=null, downloads=null, userCap=null;
+let db=null, assets=null, sample=null, downloads=null, userCap=null, mcpCap=null;
 let items=[]; // cached from onSnapshot
+let outfitsAll=[]; // cached worn-outfit history from onSnapshot
+let calMonth=new Date(); calMonth.setDate(1);
 let currentTab="All";
 let currentOutfitPick=null;
 
@@ -506,7 +601,7 @@ function daysSince(iso){ if(!iso) return Infinity; return (Date.now()-new Date(i
 function renderProfilePills(){
   const el=document.getElementById('profilePills');
   el.innerHTML = PROFILES.map(p=>`
-    <button class="profile-pill ${p.id===activeProfile?'active':''}" data-pid="${p.id}">
+    <button class="profile-pill ${p.id===activeProfile?'active':''}" data-pid="${p.id}" title="${esc(p.name)}">
       <span class="profile-avatar">${initials(p.name)}</span>${p.name}
     </button>`).join('');
   el.querySelectorAll('.profile-pill').forEach(b=>b.addEventListener('click', ()=>setActiveProfile(b.dataset.pid)));
@@ -519,7 +614,7 @@ function setActiveProfile(id){
   const h=document.getElementById('today-heading');
   if(h){ const p=profileById(id); h.textContent = p? `What should ${p.name} wear?` : 'What should I wear?'; }
   closeChooser();
-  renderGrid(); renderStats();
+  renderGrid(); renderStats(); renderCalendar();
   if(typeof loadNotes==='function') loadNotes();
 }
 function openChooser(){
@@ -598,7 +693,7 @@ function wireScopeToggle(){
   document.getElementById('scopeToggle').addEventListener('change', e=>{
     viewScope = e.target.checked ? 'household' : 'mine';
     try{ localStorage.setItem('closet_scope', viewScope); }catch(err){}
-    renderGrid(); renderStats();
+    renderGrid(); renderStats(); renderCalendar();
   });
 }
 // items belonging to the active profile, or shared — vs everyone's, per the scope toggle
@@ -626,6 +721,7 @@ document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
     sample = await claude.use('sample');
     downloads = await claude.use('downloads');
     userCap = await claude.use('user');
+    mcpCap = await claude.use('mcp');
   }catch(e){}
 
   if(userCap){
@@ -647,6 +743,8 @@ document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
   wireOverlay();
   wireScopeToggle();
   wireAdmin();
+  wireCalendarNav();
+  wireCalendarSearch();
   document.getElementById('btn-getoutfit').addEventListener('click', getOutfit);
   document.getElementById('btn-refresh-notes').addEventListener('click', updateNotes);
 })();
@@ -660,7 +758,7 @@ function subscribeProfiles(){
     const th=document.getElementById('today-heading');
     if(th){ const ap=profileById(activeProfile); if(ap) th.textContent = `What should ${ap.name} wear?`; }
     if(!activeProfile && PROFILES.length){ activeProfile = PROFILES[0].id; openChooser(); }
-    if(!subscribedItems && db){ subscribedItems=true; subscribeItems(); }
+    if(!subscribedItems && db){ subscribedItems=true; subscribeItems(); subscribeOutfits(); }
     renderGrid(); renderStats();
   }, err=>console.error(err));
 }
@@ -792,12 +890,112 @@ Look closely at the photo and reply with ONLY a JSON object, no other text, usin
 Return ONLY the JSON object.`;
   try{
     const data = await sample.json(prompt, {images:[file], modelTier:'default'});
-    await docRef.update({status:'ready', ...sanitizeItem(data, formalityOptions)});
+    const clean = sanitizeItem(data, formalityOptions);
+    await docRef.update({status:'ready', ...clean});
+    syncItemToDrive(docRef.id, file, clean, ownerProfile);
+    const dupe = findLikelyDuplicate(clean, ownerProfile, docRef.id);
+    if(dupe){ showDupeWarning(docRef.id, file, clean, dupe); }
   }catch(e){
     console.error(e);
     await docRef.update({status: e.code==='not_granted' ? 'ready' : 'ready'});
     if(e.code!=='not_granted') toast("Couldn't auto-read that item — you can fill details in manually.");
   }
+}
+
+// ---------- Google Drive backup (best-effort, via the viewer's own connected Drive) ----------
+async function syncItemToDrive(itemId, file, data, ownerProfile){
+  if(!mcpCap) return; // mcp not available in this view — skip quietly
+  const profile = profileById(ownerProfile);
+  if(!profile || !profile.driveFolderId) return; // no Drive folder configured for this profile
+  try{
+    const listing = await mcpCap.listTools('Google Drive');
+    const info = (listing.servers||[])[0];
+    if(!info || info.authStatus==='needs_reauth') return;
+    const drive = await mcpCap.server('Google Drive');
+    const safeName = (data.subtype || data.category || 'item').replace(/[^\w\- ]/g,'').trim().slice(0,60) || 'item';
+
+    if(file){
+      const canFile = (await mcpCap.listTools()).fileArgs;
+      const ext = (file.type.split('/')[1]||'jpg').replace('jpeg','jpg');
+      if(canFile){
+        await drive.create_file({
+          title: `${safeName}.${ext}`,
+          parentId: profile.driveFolderId,
+          contentMimeType: file.type,
+          disableConversionToGoogleType: true,
+          base64Content: {$file:{data:file, name:`${safeName}.${ext}`, type:file.type}}
+        });
+      }
+    }
+    const metaText = JSON.stringify({id:itemId, category:data.category, subtype:data.subtype, brand:data.brand,
+      colors:data.colors, fabric:data.fabric, formality:data.formality, seasonality:data.seasonality,
+      careInstructions:data.careInstructions, productUrl:data.productUrl||null}, null, 2);
+    await drive.create_file({
+      title: `${safeName} - details.json`,
+      parentId: profile.driveFolderId,
+      contentMimeType: 'application/json',
+      disableConversionToGoogleType: true,
+      textContent: metaText
+    });
+  }catch(e){
+    console.error('Drive backup skipped:', e && e.code, e && e.message);
+  }
+}
+
+// ---------- duplicate detection ----------
+function findLikelyDuplicate(newData, ownerProfile, excludeId){
+  const candidates = items.filter(i=> i.ownerProfile===ownerProfile && i.status==='ready' && i.id!==excludeId);
+  for(const c of candidates){
+    if(!newData.category || c.category!==newData.category) continue;
+    const sameBrand = newData.brand && c.brand && newData.brand.trim().toLowerCase()===c.brand.trim().toLowerCase();
+    const newColors = (newData.colors||[]).map(x=>x.toLowerCase());
+    const oldColors = (c.colors||[]).map(x=>x.toLowerCase());
+    const colorOverlap = newColors.length && oldColors.length && newColors.some(col=>oldColors.includes(col));
+    const a = (newData.subtype||'').trim().toLowerCase(), b=(c.subtype||'').trim().toLowerCase();
+    const nameSimilar = a && b && (a.includes(b) || b.includes(a));
+    if(sameBrand || (colorOverlap && nameSimilar)) return c;
+  }
+  return null;
+}
+
+function showDupeWarning(newId, file, newData, existing){
+  const box = document.getElementById('dupeModalBox');
+  const newPhotoUrl = file ? URL.createObjectURL(file) : null;
+  box.innerHTML = `
+    <h2>This might already be in the closet</h2>
+    <p>The item you just added looks similar to something already catalogued. Take a look and decide — this is just a heads up, nothing is deleted automatically.</p>
+    <div class="dupe-compare">
+      <div class="dupe-side">
+        <div class="lbl">Just added</div>
+        ${newPhotoUrl?`<img src="${newPhotoUrl}">`:`<div class="thumb no-photo">No photo yet</div>`}
+        <div class="nm">${esc(newData.subtype||newData.category||'Untitled')}</div>
+      </div>
+      <div class="dupe-side">
+        <div class="lbl">Already in closet</div>
+        ${existing.imageUrl?`<img src="${existing.imageUrl}">`:`<div class="thumb no-photo">No photo yet</div>`}
+        <div class="nm">${esc(existing.subtype||existing.category||'Untitled')}</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn accent small" id="dupeKeep">Keep both — not a duplicate</button>
+      <button class="btn ghost small danger" id="dupeRemove">Remove the one I just added</button>
+    </div>`;
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('dupeOverlay').classList.add('show');
+  document.getElementById('dupeKeep').onclick = ()=>{
+    document.getElementById('dupeOverlay').classList.remove('show');
+    if(newPhotoUrl) URL.revokeObjectURL(newPhotoUrl);
+  };
+  document.getElementById('dupeRemove').onclick = async ()=>{
+    try{
+      const i = items.find(x=>x.id===newId);
+      await db.collection('items').doc(newId).delete();
+      if(i && i.assetId) assets.delete(i.assetId).catch(()=>{});
+      toast('Removed the duplicate upload.');
+    }catch(e){ toast("Couldn't remove it — you can delete it manually."); }
+    document.getElementById('dupeOverlay').classList.remove('show');
+    if(newPhotoUrl) URL.revokeObjectURL(newPhotoUrl);
+  };
 }
 
 function sanitizeItem(d, allowedFormality){
@@ -872,6 +1070,9 @@ Only include actual apparel/accessory line items — leave out shipping, tax, gi
         stylingNotes:'Details pulled from a receipt — add a real photo once the piece arrives to get full styling notes.'
       });
       createdIds.push(ref.id);
+      const dupeCategory = CATEGORIES.includes(li.category) ? li.category : 'Other';
+      const dupe = findLikelyDuplicate({category:dupeCategory, brand:li.brandGuess||'', colors: li.colorGuess?[li.colorGuess]:[], subtype: li.description||''}, owner, ref.id);
+      if(dupe){ showDupeWarning(ref.id, null, {category:dupeCategory, brand:li.brandGuess, colors:li.colorGuess?[li.colorGuess]:[], subtype:li.description}, dupe); }
     }
     await receiptDoc.update({status:'done', retailer:data.retailer||'', orderDate:data.orderDate||'', itemIds:createdIds});
     toast(createdIds.length ? `Added ${createdIds.length} item${createdIds.length===1?'':'s'} from ${data.retailer||'your receipt'}.` : "Didn't find any clothing line items on that receipt.");
@@ -910,11 +1111,12 @@ function openModal(id){
       ${i.seasonality?`<span class="pill">${esc(i.seasonality)}</span>`:''}
       <h2 style="margin-top:12px;">${esc(i.subtype||'Untitled item')}</h2>
       ${i.brand?`<div style="color:var(--muted); font-size:13px;">${esc(i.brand)}</div>`:''}
+      ${i.productUrl?`<div style="margin-top:4px;"><a href="${esc(i.productUrl)}" target="_blank" rel="noopener" style="font-size:12.5px; color:var(--brass-deep); text-decoration:underline;">View product online ↗</a></div>`:''}
       ${i.sourceReceipt?`<div style="color:var(--muted); font-size:12px; margin-top:4px;">${esc(i.purchasedFrom||'Purchase')}${i.purchasePrice?` · ${esc(i.purchasePrice)}`:''}${i.purchaseDate?` · ${esc(i.purchaseDate)}`:''}</div>`:''}
 
       <div class="editgrid" style="margin-top:18px;">
         <div><label class="field">Category</label><select id="e-category">${CATEGORIES.filter(c=>c!=='All').map(c=>`<option ${c===i.category?'selected':''}>${c}</option>`).join('')}</select></div>
-        <div><label class="field">Subtype</label><input type="text" id="e-subtype" value="${esc(i.subtype)}"></div>
+        <div><label class="field">Item name</label><input type="text" id="e-subtype" value="${esc(i.subtype)}"></div>
         <div><label class="field">Colors (comma-separated)</label><input type="text" id="e-colors" value="${esc((i.colors||[]).join(', '))}"></div>
         <div><label class="field">Print</label><input type="text" id="e-print" value="${esc(i.print)}"></div>
         <div><label class="field">Fabric</label><input type="text" id="e-fabric" value="${esc(i.fabric)}"></div>
@@ -925,6 +1127,7 @@ function openModal(id){
         <div><label class="field">Formality</label><select id="e-formality">${formalityListFor(i.ownerProfile).map(f=>`<option ${f===i.formality?'selected':''}>${f}</option>`).join('')}</select></div>
         <div><label class="field">Belongs to</label><select id="e-owner">${PROFILES.map(p=>`<option value="${p.id}" ${p.id===(i.ownerProfile||activeProfile)?'selected':''}>${p.name}</option>`).join('')}</select></div>
         <div style="display:flex; align-items:flex-end;"><label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin-bottom:9px;"><input type="checkbox" id="e-shared" style="width:auto;" ${i.shared?'checked':''}> Shared with household</label></div>
+        <div class="full"><label class="field">Product link — paste one to fetch details from it, or leave blank to search by name</label><input type="text" id="e-producturl" value="${esc(i.productUrl||'')}" placeholder="https://..."></div>
         <div class="full"><label class="field">Weather suitability</label><textarea id="e-weather">${esc(i.weatherSuitability)}</textarea></div>
         <div class="full"><label class="field">Fit / styling notes</label><textarea id="e-fit">${esc(i.fitNotes)}</textarea></div>
         <div class="full"><label class="field">Styling notes</label><textarea id="e-styling">${esc(i.stylingNotes)}</textarea></div>
@@ -941,6 +1144,7 @@ function openModal(id){
         <button class="btn accent small" id="mSave">Save changes</button>
         <button class="btn ghost small" id="mWorn">Mark worn today</button>
         <button class="btn ghost small" id="mReanalyze">Re-read photo</button>
+        <button class="btn ghost small" id="mCopyLookup" title="Uses the Product link above if filled in, otherwise searches by name — opens a new Claude chat tab, not this conversation">Copy prompt &amp; open Claude</button>
         <button class="btn ghost small danger" id="mDelete">Remove item</button>
       </div>
     </div>
@@ -951,6 +1155,7 @@ function openModal(id){
   document.getElementById('mWorn').onclick = ()=>markWorn(i.id);
   document.getElementById('mReanalyze').onclick = ()=>reanalyze(i.id);
   document.getElementById('mDelete').onclick = ()=>deleteItem(i.id);
+  document.getElementById('mCopyLookup').onclick = ()=>copyLookupPrompt(i);
   const addPhotoBtn = document.getElementById('mAddPhoto');
   if(addPhotoBtn){
     const pi = document.getElementById('mPhotoInput');
@@ -978,6 +1183,7 @@ async function saveModal(id){
     print:g('e-print'), fabric:g('e-fabric'), texture:g('e-texture'), silhouette:g('e-silhouette'),
     brand:g('e-brand'), seasonality:g('e-season'), formality:g('e-formality'),
     ownerProfile:g('e-owner'), shared:document.getElementById('e-shared').checked,
+    productUrl:g('e-producturl'),
     weatherSuitability:g('e-weather'), fitNotes:g('e-fit'), stylingNotes:g('e-styling'),
     trendNotes:g('e-trend'), careInstructions:g('e-care'), pairingIdeas:g('e-pairing')
   };
@@ -1014,6 +1220,31 @@ async function deleteItem(id){
   }catch(e){ toast("Couldn't remove."); }
 }
 
+async function copyLookupPrompt(i){
+  const pastedUrl = (document.getElementById('e-producturl')?.value || '').trim();
+  const details = [
+    i.subtype && `Item: ${i.subtype}`,
+    i.brand && `Brand: ${i.brand}`,
+    i.category && `Category: ${i.category}`,
+    (i.colors||[]).length && `Colors: ${i.colors.join(', ')}`,
+    i.fabric && `Fabric: ${i.fabric}`,
+    i.print && i.print!=='solid' && `Print: ${i.print}`
+  ].filter(Boolean).join('\n');
+
+  const prompt = pastedUrl
+    ? `Please fetch this product page and fill in as much detail as possible for item id ${i.id} in my closet app:\n\n${pastedUrl}\n\nPull whatever is available: exact name, brand, fabric/material composition, care instructions, colors, and price. Save the page's own URL as the item's product link either way. If you can find a direct image URL for the product, mention it — I understand you may not always be able to import the actual photo into the app, a text link to view it is fine too.`
+    : `Please search the web for this exact item and, if you find a real match, add the product link to it in my closet app (item id: ${i.id}):\n\n${details}`;
+
+  try{
+    await navigator.clipboard.writeText(prompt);
+    toast('Copied — opening Claude in a new tab to paste it.');
+  }catch(e){
+    toast('Could not copy automatically — select and copy the text yourself.');
+    window.prompt('Copy this to send to Claude:', prompt);
+  }
+  window.open('https://claude.ai/new', '_blank');
+}
+
 // ---------- today: outfit recommendation ----------
 function compactInventory(){
   return scopedItems().filter(i=>i.status!=='analyzing').map(i=>({
@@ -1030,6 +1261,7 @@ async function getOutfit(){
   const person = profileById(activeProfile);
   const kid = isKid(activeProfile);
   const ctx = {
+    freeform: val('f-freeform'),
     location: val('f-location'), date: val('f-date'), plans: val('f-plans'),
     vibe: val('f-vibe'), needs: val('f-needs'), avoid: val('f-avoid'), include: val('f-include')
   };
@@ -1045,7 +1277,7 @@ This outfit is for a 12-year-old (${person.name}). Keep every part of the respon
 Closet inventory (JSON):
 ${JSON.stringify(inv).slice(0,50000)}
 
-Today:
+${ctx.freeform ? `${person?person.name:'They'} described today in their own words:\n"${ctx.freeform}"\n\n` : ''}Specific fields filled in for today:
 - Location: ${ctx.location||'not specified'}
 - Date: ${ctx.date}
 - Plans: ${ctx.plans||'not specified'}
@@ -1054,7 +1286,7 @@ Today:
 - Must avoid wearing: ${ctx.avoid||'none'}
 - Would like to include: ${ctx.include||'no preference'}
 
-Style standards: modern, intentional, realistic — never costume-like. Consider the season and likely weather for that location and date. Favor making an outfit feel current through styling moves (cuffing, belting, layering, a shoe swap, jewelry choice) rather than implying anything should be bought. Only use item ids that appear in the inventory above; never invent an id.
+${ctx.freeform ? 'Use the free-form description AND the specific fields together: read the free-form text for the full picture (mood, sequence of events, unstated constraints), and treat the specific fields as explicit overrides/details on top of it — if they conflict, the specific fields win, but use the free-form text to fill in anything the fields leave vague.\n\n' : ''}Style standards: modern, intentional, realistic — never costume-like. Consider the season and likely weather for that location and date. Favor making an outfit feel current through styling moves (cuffing, belting, layering, a shoe swap, jewelry choice) rather than implying anything should be bought. Only use item ids that appear in the inventory above; never invent an id.
 
 Reply with ONLY this JSON shape:
 {
@@ -1065,8 +1297,8 @@ Reply with ONLY this JSON shape:
 
   try{
     const data = await sample.json(prompt, {modelTier:'complex'});
-    renderOutfit(data, ctx);
-    saveOutfitHistory(data, ctx);
+    const outfitRef = await saveOutfitHistory(data, ctx);
+    renderOutfit(data, ctx, outfitRef);
   }catch(e){
     console.error(e);
     document.getElementById('today-result').innerHTML = `<p style="color:var(--clay);">Couldn't put together a recommendation just now (${esc(e.code||'error')}). Try again in a moment.</p>`;
@@ -1083,7 +1315,7 @@ function itemChip(id){
   return `<div class="oi">${i.imageUrl?`<img src="${i.imageUrl}">`:''}<span>${esc(i.subtype||i.category||'')}</span></div>`;
 }
 
-function renderOutfit(data, ctx){
+function renderOutfit(data, ctx, outfitRef){
   const b=data.bestOutfit||{}, c=data.comfortAlternate||{}, f=data.fashionAlternate||{};
   currentOutfitPick = (b.itemIds||[]);
   document.getElementById('today-result').innerHTML = `
@@ -1108,7 +1340,7 @@ function renderOutfit(data, ctx){
         <div class="alt-card fashion"><h4>More fashion-forward</h4><div class="outfit-items">${(f.itemIds||[]).map(itemChip).join('')}</div><p style="font-size:13.5px; margin:0;">${esc(f.why||'')}</p></div>
       </div>
     </div>`;
-  document.getElementById('btn-worethis').onclick = ()=>confirmWorn(b.itemIds||[]);
+  document.getElementById('btn-worethis').onclick = ()=>confirmWorn(b.itemIds||[], outfitRef);
   buildOutfitBoard(b.itemIds||[], ctx);
 }
 
@@ -1208,23 +1440,107 @@ async function buildOutfitBoard(itemIds, ctx){
   };
 }
 
-async function confirmWorn(ids){
+async function confirmWorn(ids, outfitRef){
   for(const id of ids){
     const i = items.find(x=>x.id===id);
     if(!i) continue;
     try{ await db.collection('items').doc(id).update({wearCount:(i.wearCount||0)+1, lastWorn:new Date().toISOString()}); }catch(e){}
   }
+  if(outfitRef){ try{ await outfitRef.update({worn:true}); }catch(e){} }
   toast('Logged — enjoy today.');
 }
 
 async function saveOutfitHistory(data, ctx){
   try{
-    await db.collection('outfits').add({
-      date: ctx.date, location: ctx.location, plans: ctx.plans, vibe: ctx.vibe,
-      ownerProfile: activeProfile,
+    return await db.collection('outfits').add({
+      date: ctx.date, location: ctx.location, plans: ctx.plans, vibe: ctx.vibe, freeform: ctx.freeform||'',
+      ownerProfile: activeProfile, worn:false,
       itemIds: (data.bestOutfit||{}).itemIds||[], createdAt: new Date().toISOString()
     });
-  }catch(e){}
+  }catch(e){ return null; }
+}
+
+// ---------- calendar ----------
+function subscribeOutfits(){
+  db.collection('outfits').onSnapshot(snap=>{
+    outfitsAll = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    renderCalendar();
+  }, err=>console.error(err));
+}
+function scopedOutfits(){
+  const base = outfitsAll.filter(o=>o.worn);
+  return viewScope==='household' ? base : base.filter(o=>o.ownerProfile===activeProfile);
+}
+function renderCalendar(){
+  const label = document.getElementById('cal-month-label');
+  if(!label) return;
+  const y=calMonth.getFullYear(), m=calMonth.getMonth();
+  label.textContent = calMonth.toLocaleDateString(undefined,{month:'long', year:'numeric'});
+  const firstDow = new Date(y,m,1).getDay();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  const byDate = {};
+  scopedOutfits().forEach(o=>{ if(o.date) (byDate[o.date]=byDate[o.date]||[]).push(o); });
+  const todayStr = new Date().toISOString().slice(0,10);
+  let html='';
+  for(let i=0;i<firstDow;i++) html += '<div class="cal-day empty"></div>';
+  for(let d=1; d<=daysInMonth; d++){
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayOutfits = byDate[dateStr];
+    const isToday = dateStr===todayStr ? 'today' : '';
+    if(dayOutfits && dayOutfits.length){
+      const firstItem = items.find(x=>x.id===(dayOutfits[0].itemIds||[])[0]);
+      html += `<div class="cal-day has-outfit ${isToday}" data-date="${dateStr}">${firstItem&&firstItem.imageUrl?`<img src="${firstItem.imageUrl}">`:''}<span class="daynum">${d}</span></div>`;
+    }else{
+      html += `<div class="cal-day ${isToday}" data-date="${dateStr}"><span>${d}</span></div>`;
+    }
+  }
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = html;
+  grid.querySelectorAll('.cal-day[data-date]').forEach(el=>el.addEventListener('click', ()=>showDayDetail(el.dataset.date)));
+}
+function showDayDetail(dateStr){
+  const dayOutfits = scopedOutfits().filter(o=>o.date===dateStr);
+  const el = document.getElementById('cal-day-detail');
+  if(!dayOutfits.length){ el.innerHTML=''; return; }
+  el.innerHTML = dayOutfits.map(o=>`
+    <div class="cal-day-detail-card">
+      <h3>${esc(new Date(dateStr+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'}))}</h3>
+      <div class="meta">${esc([o.location,o.plans,o.vibe].filter(Boolean).join(' · ')||'No details noted')}${viewScope==='household'?` · ${esc(profileById(o.ownerProfile)?.name||'')}`:''}</div>
+      <div class="outfit-items">${(o.itemIds||[]).map(itemChip).join('')}</div>
+      ${o.freeform?`<p style="font-size:13px; color:var(--muted); margin-top:10px; font-style:italic;">"${esc(o.freeform)}"</p>`:''}
+    </div>`).join('');
+}
+function wireCalendarNav(){
+  document.getElementById('cal-prev').addEventListener('click', ()=>{ calMonth.setMonth(calMonth.getMonth()-1); renderCalendar(); });
+  document.getElementById('cal-next').addEventListener('click', ()=>{ calMonth.setMonth(calMonth.getMonth()+1); renderCalendar(); });
+}
+function wireCalendarSearch(){
+  document.getElementById('cal-search').addEventListener('input', e=>{
+    const q = e.target.value.trim().toLowerCase();
+    const gridWrap = document.getElementById('cal-grid-wrap');
+    const resultsEl = document.getElementById('cal-search-results');
+    const detailEl = document.getElementById('cal-day-detail');
+    if(!q){ gridWrap.style.display=''; resultsEl.innerHTML=''; return; }
+    gridWrap.style.display='none'; detailEl.innerHTML='';
+    const matches = scopedOutfits().filter(o=>{
+      const itemNames = (o.itemIds||[]).map(id=>{const it=items.find(x=>x.id===id); return it?(it.subtype||''):'';}).join(' ').toLowerCase();
+      const hay = [o.date,o.location,o.plans,o.vibe,o.freeform,itemNames].filter(Boolean).join(' ').toLowerCase();
+      return hay.includes(q);
+    }).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    resultsEl.innerHTML = matches.length ? matches.map(o=>`
+      <div class="cal-search-row" data-date="${o.date}">
+        <div class="d">${esc(new Date(o.date+'T00:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'}))}</div>
+        <div class="p">${esc([o.plans,o.vibe].filter(Boolean).join(' · ')||'—')}</div>
+      </div>`).join('') : '<p style="color:var(--muted); font-size:13.5px;">No matching days found.</p>';
+    resultsEl.querySelectorAll('.cal-search-row').forEach(row=>row.addEventListener('click', ()=>{
+      const [yy,mm] = row.dataset.date.split('-').map(Number);
+      calMonth = new Date(yy, mm-1, 1);
+      document.getElementById('cal-search').value='';
+      gridWrap.style.display=''; resultsEl.innerHTML='';
+      renderCalendar();
+      showDayDetail(row.dataset.date);
+    }));
+  });
 }
 
 // ---------- style notes ----------
