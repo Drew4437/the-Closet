@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Closet — Drew's Wardrobe</title>
+<title>The Closet — Household Wardrobe</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -108,6 +108,47 @@
   .navbtn.active{color:var(--ink); background:rgba(160,124,46,.14); font-weight:600;}
   .navbtn svg{width:17px; height:17px; flex-shrink:0;}
   .rail-foot{margin-top:auto; padding:0 10px; font-size:11.5px; color:var(--muted); line-height:1.5;}
+
+  /* ---------- profile picker ---------- */
+  .profile-picker{margin:0 0 22px; padding:0 2px;}
+  .profile-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:8px; padding:0 8px;}
+  .profile-pills{display:flex; flex-direction:column; gap:3px; margin-bottom:12px;}
+  .profile-pill{
+    display:flex; align-items:center; gap:9px; padding:7px 8px; border-radius:var(--radius);
+    border:none; background:none; cursor:pointer; text-align:left; font-family:inherit; color:var(--muted); font-size:13px;
+  }
+  .profile-pill:hover{background:rgba(160,124,46,.08); color:var(--ink);}
+  .profile-pill.active{background:rgba(160,124,46,.14); color:var(--ink); font-weight:600;}
+  .profile-avatar{
+    width:22px; height:22px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-size:10.5px; font-weight:700; color:#fff; background:var(--brass);
+  }
+  .profile-pill[data-pid="drew"] .profile-avatar{background:var(--ink-soft);}
+  .profile-pill[data-pid="dylan"] .profile-avatar{background:var(--clay);}
+  .scope-toggle{display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted); padding:2px 8px; cursor:pointer;}
+  .scope-toggle input{width:auto; margin:0;}
+  @media (max-width:760px){ .profile-picker{display:none;} }
+
+  .owner-tag{
+    position:absolute; bottom:8px; left:8px; background:rgba(251,249,243,.92); color:var(--ink);
+    font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:10px; letter-spacing:.02em;
+  }
+  .shared-check{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted); margin:-16px 0 22px;}
+  .shared-check input{width:auto;}
+
+  .chooser-overlay{
+    position:fixed; inset:0; background:var(--bone); display:none; align-items:center; justify-content:center; z-index:80; flex-direction:column; gap:26px;
+  }
+  .chooser-overlay.show{display:flex;}
+  .chooser-overlay h1{font-size:26px; font-weight:500; margin:0;}
+  .chooser-cards{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; padding:0 20px;}
+  .chooser-card{
+    width:150px; padding:26px 14px; background:var(--card); border:1px solid var(--card-line); border-radius:8px;
+    display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; font-family:inherit;
+  }
+  .chooser-card:hover{border-color:var(--brass);}
+  .chooser-card .profile-avatar{width:52px; height:52px; font-size:20px;}
+  .chooser-card span{font-size:14.5px; font-weight:600; color:var(--ink);}
 
   main{flex:1; min-width:0; padding:36px 44px 80px; max-width:1180px;}
   @media (max-width: 760px){
@@ -271,7 +312,14 @@
 
 <div class="app">
   <nav class="rail">
-    <div class="brand">The Closet<small>Drew's wardrobe</small></div>
+    <div class="brand">The Closet<small>Household wardrobe</small></div>
+
+    <div class="profile-picker">
+      <div class="profile-label">Closet for</div>
+      <div class="profile-pills" id="profilePills"></div>
+      <label class="scope-toggle"><input type="checkbox" id="scopeToggle"> <span>See whole household</span></label>
+    </div>
+
     <button class="navbtn active" data-view="closet">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 3l4 3 4-3M4 8l4-5 4 3 4-3 4 5-3 2v9a1 1 0 01-1 1H8a1 1 0 01-1-1v-9L4 8z"/></svg>
       <span class="label">Closet</span>
@@ -283,6 +331,10 @@
     <button class="navbtn" data-view="notes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l3 3v15a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
       <span class="label">Style Notes</span>
+    </button>
+    <button class="navbtn" data-view="admin" id="adminNavBtn" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span class="label">Admin</span>
     </button>
     <div class="rail-foot">Items are analyzed with Claude's visual read of each photo — a styling estimate, not a verified label.</div>
   </nav>
@@ -299,6 +351,7 @@
         <div id="closet-count" class="stat" style="padding:10px 18px;"><span class="n" style="font-size:20px;" id="count-n">0</span><span class="l">items</span></div>
       </div>
 
+      <label class="shared-check"><input type="checkbox" id="sharedCheck"> These uploads are shared household items (visible to everyone, not just me)</label>
       <div class="dropzone" id="dropzone">
         <div><strong>Click to upload</strong> or drag photos here — you can select several at once.</div>
       </div>
@@ -319,8 +372,8 @@
     <section class="view" id="view-today">
       <div class="pagehead">
         <div>
-          <h1>What should I wear?</h1>
-          <p>Tell me where you are and what's on the agenda — I'll build the look from what's already in your closet.</p>
+          <h1 id="today-heading">What should I wear?</h1>
+          <p>Tell me where you are and what's on the agenda — I'll build the look from what's already in the closet.</p>
         </div>
       </div>
 
@@ -372,7 +425,37 @@
       </div>
     </section>
 
+    <!-- ADMIN -->
+    <section class="view" id="view-admin">
+      <div class="pagehead">
+        <div>
+          <h1>Admin</h1>
+          <p>Manage household profiles and who can open this app. Visible to you as the artifact owner only.</p>
+        </div>
+      </div>
+
+      <div class="note-block" style="margin-bottom:24px; max-width:640px;">
+        <h3 style="margin-bottom:8px;">About the email list</h3>
+        <p style="font-size:13px; color:var(--muted); line-height:1.6; margin:0;">
+          This is a courtesy gate, not real security: it hides the closet from anyone whose Claude sign-in email
+          isn't listed below, but it can't verify an outside email at all, and anyone with basic browser tools
+          could bypass it. The real access control is who you share the artifact link with. Leave every profile's
+          email blank to leave the app open to anyone with the link.
+        </p>
+      </div>
+
+      <div id="adminList" style="display:flex; flex-direction:column; gap:14px; max-width:640px; margin-bottom:28px;"></div>
+
+      <button class="btn ghost small" id="btn-add-profile">+ Add a profile</button>
+    </section>
+
   </main>
+</div>
+
+<!-- access gate: shown to non-owner viewers not on the allowlist -->
+<div class="chooser-overlay" id="gateOverlay" style="z-index:200;">
+  <h1 class="serif">This closet is limited to specific people</h1>
+  <p style="color:var(--muted); max-width:44ch; text-align:center; font-size:14px;">Your sign-in isn't on the household list for this app. Ask whoever shared this link with you to add your email in Admin.</p>
 </div>
 
 <!-- item modal -->
@@ -380,14 +463,33 @@
   <div class="modal" id="modalBox"></div>
 </div>
 
+<!-- profile chooser (first run / switch) -->
+<div class="chooser-overlay" id="chooserOverlay">
+  <h1 class="serif">Who's getting dressed?</h1>
+  <div class="chooser-cards" id="chooserCards"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 const CATEGORIES = ["All","Tops","Bottoms","Dresses","Outerwear","Shoes","Bags","Accessories","Jewelry","Activewear","Other"];
-const FORMALITY = ["Casual","Polished Casual","Workwear","Cocktail","Evening","Vacation"];
+const FORMALITY_ADULT = ["Casual","Polished Casual","Workwear","Cocktail","Evening","Vacation"];
+const FORMALITY_KID = ["Everyday / School","Play / Sports","Weekend Casual","Party / Dress-Up","Special Occasion"];
 const SEASONS = ["Spring","Summer","Fall","Winter","Year-round"];
 
-let db=null, assets=null, sample=null, downloads=null;
+let PROFILES = []; // loaded live from db.collection('profiles')
+function profileById(id){ return PROFILES.find(p=>p.id===id) || null; }
+function isKid(profileId){ const p=profileById(profileId); return !!(p && p.kidMode); }
+function formalityListFor(profileId){ return isKid(profileId) ? FORMALITY_KID : FORMALITY_ADULT; }
+function initials(name){ return (name||'?').trim().slice(0,1).toUpperCase(); }
+
+let activeProfile=null, viewScope='mine'; // viewScope: 'mine' | 'household'
+try{ activeProfile = localStorage.getItem('closet_profile') || null; }catch(e){}
+try{ viewScope = localStorage.getItem('closet_scope') || 'mine'; }catch(e){}
+
+let isOwnerViewer=false, viewerEmail=null;
+
+let db=null, assets=null, sample=null, downloads=null, userCap=null;
 let items=[]; // cached from onSnapshot
 let currentTab="All";
 let currentOutfitPick=null;
@@ -399,6 +501,111 @@ function toast(msg){
 }
 function esc(s){ return (s??"").toString().replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function daysSince(iso){ if(!iso) return Infinity; return (Date.now()-new Date(iso).getTime())/86400000; }
+
+// ---------- profiles ----------
+function renderProfilePills(){
+  const el=document.getElementById('profilePills');
+  el.innerHTML = PROFILES.map(p=>`
+    <button class="profile-pill ${p.id===activeProfile?'active':''}" data-pid="${p.id}">
+      <span class="profile-avatar">${initials(p.name)}</span>${p.name}
+    </button>`).join('');
+  el.querySelectorAll('.profile-pill').forEach(b=>b.addEventListener('click', ()=>setActiveProfile(b.dataset.pid)));
+  document.getElementById('scopeToggle').checked = viewScope==='household';
+}
+function setActiveProfile(id){
+  activeProfile=id;
+  try{ localStorage.setItem('closet_profile', id); }catch(e){}
+  renderProfilePills();
+  const h=document.getElementById('today-heading');
+  if(h){ const p=profileById(id); h.textContent = p? `What should ${p.name} wear?` : 'What should I wear?'; }
+  closeChooser();
+  renderGrid(); renderStats();
+  if(typeof loadNotes==='function') loadNotes();
+}
+function openChooser(){
+  const el=document.getElementById('chooserCards');
+  el.innerHTML = PROFILES.map(p=>`
+    <button class="chooser-card" data-pid="${p.id}">
+      <span class="profile-avatar">${initials(p.name)}</span><span>${esc(p.name)}</span>
+    </button>`).join('');
+  el.querySelectorAll('.chooser-card').forEach(b=>b.addEventListener('click', ()=>setActiveProfile(b.dataset.pid)));
+  document.getElementById('chooserOverlay').classList.add('show');
+}
+function closeChooser(){ document.getElementById('chooserOverlay').classList.remove('show'); }
+// ---------- admin ----------
+function renderAdminList(){
+  const el=document.getElementById('adminList');
+  if(!el) return;
+  el.innerHTML = PROFILES.map(p=>`
+    <div class="note-block" data-pid="${p.id}">
+      <div class="editgrid">
+        <div><label class="field">Name</label><input type="text" class="a-name" value="${esc(p.name)}"></div>
+        <div><label class="field">Age</label><input type="text" class="a-age" value="${esc(p.age)}"></div>
+        <div><label class="field">Email (for access list)</label><input type="text" class="a-email" value="${esc(p.email||'')}" placeholder="name@example.com"></div>
+        <div style="display:flex; align-items:flex-end;"><label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin-bottom:9px;"><input type="checkbox" class="a-kid" style="width:auto;" ${p.kidMode?'checked':''}> Kid-appropriate mode</label></div>
+        <div class="full"><label class="field">Drive folder link (optional)</label><input type="text" class="a-drive" value="${esc(p.driveFolderUrl||'')}" placeholder="https://drive.google.com/drive/folders/..."></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn accent small a-save">Save</button>
+        <button class="btn ghost small danger a-delete">Remove profile</button>
+      </div>
+    </div>`).join('');
+  el.querySelectorAll('.note-block').forEach(card=>{
+    const pid = card.dataset.pid;
+    card.querySelector('.a-save').onclick = ()=>saveProfile(pid, card);
+    card.querySelector('.a-delete').onclick = ()=>deleteProfile(pid);
+  });
+}
+
+async function saveProfile(pid, card){
+  const g = sel=>card.querySelector(sel).value.trim();
+  const driveUrl = g('.a-drive');
+  const m = driveUrl.match(/folders\/([a-zA-Z0-9_-]+)/);
+  const patch = {
+    name: g('.a-name') || 'Untitled',
+    age: Number(g('.a-age')) || null,
+    email: g('.a-email').toLowerCase(),
+    kidMode: card.querySelector('.a-kid').checked,
+    driveFolderUrl: driveUrl,
+    driveFolderId: m ? m[1] : (driveUrl || null)
+  };
+  try{ await db.collection('profiles').doc(pid).update(patch); toast('Profile saved.'); }
+  catch(e){ console.error(e); toast("Couldn't save that profile."); }
+}
+
+async function deleteProfile(pid){
+  if(PROFILES.length<=1){ toast('At least one profile has to stay.'); return; }
+  if(!confirm('Remove this profile? Their items stay in the closet but lose their owner tag.')) return;
+  try{
+    await db.collection('profiles').doc(pid).delete();
+    if(activeProfile===pid){ activeProfile=null; try{ localStorage.removeItem('closet_profile'); }catch(e){} }
+    toast('Profile removed.');
+  }catch(e){ toast("Couldn't remove that profile."); }
+}
+
+function wireAdmin(){
+  document.getElementById('btn-add-profile').addEventListener('click', async ()=>{
+    const name = prompt("New profile's name?");
+    if(!name) return;
+    try{
+      await db.collection('profiles').add({name:name.trim(), age:null, kidMode:false, email:'', driveFolderId:null, driveFolderUrl:'', order:(PROFILES.length+1)});
+      toast('Profile added.');
+    }catch(e){ toast("Couldn't add that profile."); }
+  });
+}
+
+function wireScopeToggle(){
+  document.getElementById('scopeToggle').addEventListener('change', e=>{
+    viewScope = e.target.checked ? 'household' : 'mine';
+    try{ localStorage.setItem('closet_scope', viewScope); }catch(err){}
+    renderGrid(); renderStats();
+  });
+}
+// items belonging to the active profile, or shared — vs everyone's, per the scope toggle
+function scopedItems(){
+  if(viewScope==='household') return items;
+  return items.filter(i=>i.ownerProfile===activeProfile || i.shared);
+}
 
 // ---------- nav ----------
 document.querySelectorAll('.navbtn').forEach(b=>{
@@ -418,22 +625,58 @@ document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
     assets = await claude.use('assets');
     sample = await claude.use('sample');
     downloads = await claude.use('downloads');
+    userCap = await claude.use('user');
   }catch(e){}
+
+  if(userCap){
+    try{ isOwnerViewer = await userCap.isOwner(); }catch(e){}
+    try{ viewerEmail = await userCap.email(); }catch(e){}
+  }
+  if(isOwnerViewer){ document.getElementById('adminNavBtn').style.display=''; }
 
   if(!db || !assets){
     document.getElementById('dropzone').innerHTML = "This view can't save data right now — open the app itself to catalog your closet.";
     document.getElementById('dropzone').style.cursor='default';
   } else {
-    subscribeItems();
+    subscribeProfiles(); // this also kicks off the access gate + item subscription once profiles arrive
   }
 
   buildTabs();
   wireUpload();
   wireReceiptUpload();
   wireOverlay();
+  wireScopeToggle();
+  wireAdmin();
   document.getElementById('btn-getoutfit').addEventListener('click', getOutfit);
   document.getElementById('btn-refresh-notes').addEventListener('click', updateNotes);
 })();
+
+function subscribeProfiles(){
+  db.collection('profiles').onSnapshot(snap=>{
+    PROFILES = snap.docs.map(d=>({id:d.id, ...d.data})).sort((a,b)=>(a.order||0)-(b.order||0));
+    runAccessGate();
+    renderProfilePills();
+    renderAdminList();
+    const th=document.getElementById('today-heading');
+    if(th){ const ap=profileById(activeProfile); if(ap) th.textContent = `What should ${ap.name} wear?`; }
+    if(!activeProfile && PROFILES.length){ activeProfile = PROFILES[0].id; openChooser(); }
+    if(!subscribedItems && db){ subscribedItems=true; subscribeItems(); }
+    renderGrid(); renderStats();
+  }, err=>console.error(err));
+}
+let subscribedItems=false;
+
+// soft, client-side courtesy gate — see the admin tab for details/limits
+function runAccessGate(){
+  const gate = document.getElementById('gateOverlay');
+  if(!gate) return;
+  if(isOwnerViewer){ gate.classList.remove('show'); return; }
+  const allowlist = PROFILES.map(p=>(p.email||'').trim().toLowerCase()).filter(Boolean);
+  if(!allowlist.length){ gate.classList.remove('show'); return; } // nothing configured — open to anyone with the link
+  if(!viewerEmail){ gate.classList.remove('show'); return; } // can't verify identity here — fail open
+  if(allowlist.includes(viewerEmail.trim().toLowerCase())){ gate.classList.remove('show'); }
+  else{ gate.classList.add('show'); }
+}
 
 function subscribeItems(){
   db.collection('items').orderBy('createdAt','desc').limit(1000).onSnapshot(snap=>{
@@ -457,14 +700,16 @@ function buildTabs(){
 
 function renderGrid(){
   const grid=document.getElementById('grid');
-  const list = currentTab==='All' ? items : items.filter(i=>i.category===currentTab);
-  document.getElementById('count-n').textContent = items.length;
+  const base = scopedItems();
+  const list = currentTab==='All' ? base : base.filter(i=>i.category===currentTab);
+  document.getElementById('count-n').textContent = base.length;
   document.getElementById('emptyMsg').style.display = list.length? 'none':'block';
   grid.innerHTML = list.map(i=>`
     <div class="card ${i.status==='analyzing'?'analyzing':''}" data-id="${i.id}">
       ${i.imageUrl?`<img class="thumb" src="${i.imageUrl}" loading="lazy">`:`<div class="thumb no-photo">No photo yet</div>`}
       ${i.status==='analyzing'?'<div class="badge">Reading photo…</div>':''}
       ${i.sourceReceipt?'<div class="badge" style="background:rgba(160,124,46,.85);">From receipt</div>':''}
+      ${(viewScope==='household' && i.ownerProfile)?`<div class="owner-tag">${esc(profileById(i.ownerProfile)?.name || i.ownerProfile)}${i.shared?' · shared':''}</div>`:''}
       <div class="meta">
         <div class="cat">${esc(i.category||'Uncategorized')}</div>
         <div class="sub">${esc(i.subtype||'Untitled item')}</div>
@@ -475,9 +720,10 @@ function renderGrid(){
 }
 
 function renderStats(){
-  document.getElementById('stat-total').textContent = items.length;
-  document.getElementById('stat-worn30').textContent = items.filter(i=>daysSince(i.lastWorn)<=30).length;
-  document.getElementById('stat-dormant').textContent = items.filter(i=>i.createdAt && daysSince(i.lastWorn||i.createdAt)>=90).length;
+  const base = scopedItems();
+  document.getElementById('stat-total').textContent = base.length;
+  document.getElementById('stat-worn30').textContent = base.filter(i=>daysSince(i.lastWorn)<=30).length;
+  document.getElementById('stat-dormant').textContent = base.filter(i=>i.createdAt && daysSince(i.lastWorn||i.createdAt)>=90).length;
 }
 
 // ---------- upload ----------
@@ -501,14 +747,15 @@ async function handleFiles(fileList){
 
 async function uploadOne(file){
   let docRef;
+  const owner = activeProfile, shared = document.getElementById('sharedCheck').checked;
   try{
     docRef = await db.collection('items').add({
       status:'analyzing', category:'Other', subtype:'', colors:[], createdAt:new Date().toISOString(),
-      wearCount:0, lastWorn:null
+      wearCount:0, lastWorn:null, ownerProfile:owner, shared:shared
     });
     const up = await assets.upload(file);
     await docRef.update({assetId: up.id, imageUrl: up.url});
-    await analyzeItem(docRef, file);
+    await analyzeItem(docRef, file, owner);
   }catch(e){
     console.error(e);
     toast("Couldn't add that photo — try again.");
@@ -516,9 +763,13 @@ async function uploadOne(file){
   }
 }
 
-async function analyzeItem(docRef, file){
+async function analyzeItem(docRef, file, ownerProfile){
   if(!sample){ await docRef.update({status:'ready'}); return; }
-  const prompt = `You are a professional wardrobe stylist cataloging one clothing/accessory item from a photo for a digital closet app.
+  const kid = isKid(ownerProfile);
+  const formalityOptions = formalityListFor(ownerProfile);
+  const kidGuard = kid ? `
+This item belongs to a 12-year-old. Keep every field comfortable, practical and age-appropriate — describe fit in terms of comfort and room to move (not body shape or figure), keep styling and trend notes fun and wholesome (favorite colors, popular-but-practical touches, durability for play/school), and never use adult, body-conscious, or fashion-forward-as-sexy language.` : '';
+  const prompt = `You are a wardrobe cataloger for a household digital closet app, cataloging one clothing/accessory item from a photo.${kidGuard}
 Look closely at the photo and reply with ONLY a JSON object, no other text, using exactly these keys:
 {
  "category": one of ["Tops","Bottoms","Dresses","Outerwear","Shoes","Bags","Accessories","Jewelry","Activewear","Other"],
@@ -531,17 +782,17 @@ Look closely at the photo and reply with ONLY a JSON object, no other text, usin
  "brand": brand name only if a logo or label is clearly visible, else "",
  "seasonality": one of ["Spring","Summer","Fall","Winter","Year-round"],
  "weatherSuitability": one short sentence on the weather/temperature it suits,
- "formality": one of ["Casual","Polished Casual","Workwear","Cocktail","Evening","Vacation"],
- "fitNotes": fit and proportion notes (oversized, fitted, cropped, high-waisted, relaxed, etc.),
+ "formality": one of ${JSON.stringify(formalityOptions)},
+ "fitNotes": fit and comfort notes${kid? ' (comfort/room-to-move only, never body-shape language)':' (oversized, fitted, cropped, high-waisted, relaxed, etc.)'},
  "stylingNotes": how to style or layer it,
- "trendNotes": trend relevance and how timeless it is,
+ "trendNotes": ${kid? 'whether it fits current kid-friendly styles and how durable/timeless it is':'trend relevance and how timeless it is'},
  "careInstructions": realistic general cleaning/care guidance for the apparent fabric — note it is an estimate from appearance, not a verified care label,
  "pairingIdeas": general guidance on colors, shoes, bags or accessories that would pair well with this piece
 }
 Return ONLY the JSON object.`;
   try{
     const data = await sample.json(prompt, {images:[file], modelTier:'default'});
-    await docRef.update({status:'ready', ...sanitizeItem(data)});
+    await docRef.update({status:'ready', ...sanitizeItem(data, formalityOptions)});
   }catch(e){
     console.error(e);
     await docRef.update({status: e.code==='not_granted' ? 'ready' : 'ready'});
@@ -549,7 +800,7 @@ Return ONLY the JSON object.`;
   }
 }
 
-function sanitizeItem(d){
+function sanitizeItem(d, allowedFormality){
   const out={};
   if(CATEGORIES.includes(d.category)) out.category=d.category; 
   ['subtype','print','fabric','texture','silhouette','brand','weatherSuitability','fitNotes','stylingNotes','trendNotes','careInstructions','pairingIdeas'].forEach(k=>{
@@ -557,7 +808,8 @@ function sanitizeItem(d){
   });
   if(Array.isArray(d.colors)) out.colors = d.colors.slice(0,4).map(String);
   if(SEASONS.includes(d.seasonality)) out.seasonality=d.seasonality;
-  if(FORMALITY.includes(d.formality)) out.formality=d.formality;
+  const formalityList = allowedFormality || FORMALITY_ADULT;
+  if(formalityList.includes(d.formality)) out.formality=d.formality;
   return out;
 }
 
@@ -600,6 +852,7 @@ Only include actual apparel/accessory line items — leave out shipping, tax, gi
 
     const data = await sample.json(prompt, {images:[file], modelTier:'default'});
     const lineItems = Array.isArray(data.items) ? data.items.slice(0,25) : [];
+    const owner = activeProfile;
     const createdIds=[];
     for(const li of lineItems){
       if(!li.description) continue;
@@ -613,6 +866,7 @@ Only include actual apparel/accessory line items — leave out shipping, tax, gi
         purchasedFrom: data.retailer ? String(data.retailer).slice(0,120) : '',
         purchaseDate: data.orderDate || '',
         sourceReceipt: true, receiptId: receiptDoc.id,
+        ownerProfile: owner, shared: false,
         imageUrl:null, assetId:null,
         createdAt:new Date().toISOString(), wearCount:0, lastWorn:null,
         stylingNotes:'Details pulled from a receipt — add a real photo once the piece arrives to get full styling notes.'
@@ -668,7 +922,9 @@ function openModal(id){
         <div><label class="field">Silhouette</label><input type="text" id="e-silhouette" value="${esc(i.silhouette)}"></div>
         <div><label class="field">Brand</label><input type="text" id="e-brand" value="${esc(i.brand)}"></div>
         <div><label class="field">Seasonality</label><select id="e-season">${SEASONS.map(s=>`<option ${s===i.seasonality?'selected':''}>${s}</option>`).join('')}</select></div>
-        <div><label class="field">Formality</label><select id="e-formality">${FORMALITY.map(f=>`<option ${f===i.formality?'selected':''}>${f}</option>`).join('')}</select></div>
+        <div><label class="field">Formality</label><select id="e-formality">${formalityListFor(i.ownerProfile).map(f=>`<option ${f===i.formality?'selected':''}>${f}</option>`).join('')}</select></div>
+        <div><label class="field">Belongs to</label><select id="e-owner">${PROFILES.map(p=>`<option value="${p.id}" ${p.id===(i.ownerProfile||activeProfile)?'selected':''}>${p.name}</option>`).join('')}</select></div>
+        <div style="display:flex; align-items:flex-end;"><label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin-bottom:9px;"><input type="checkbox" id="e-shared" style="width:auto;" ${i.shared?'checked':''}> Shared with household</label></div>
         <div class="full"><label class="field">Weather suitability</label><textarea id="e-weather">${esc(i.weatherSuitability)}</textarea></div>
         <div class="full"><label class="field">Fit / styling notes</label><textarea id="e-fit">${esc(i.fitNotes)}</textarea></div>
         <div class="full"><label class="field">Styling notes</label><textarea id="e-styling">${esc(i.stylingNotes)}</textarea></div>
@@ -707,7 +963,7 @@ function openModal(id){
         const up = await assets.upload(file);
         const ref = db.collection('items').doc(i.id);
         await ref.update({assetId:up.id, imageUrl:up.url, status:'analyzing'});
-        await analyzeItem(ref, file);
+        await analyzeItem(ref, file, i.ownerProfile || activeProfile);
         toast('Photo added.'); closeModal();
       }catch(e){ console.error(e); toast("Couldn't add that photo."); }
     };
@@ -721,6 +977,7 @@ async function saveModal(id){
     colors:g('e-colors').split(',').map(s=>s.trim()).filter(Boolean),
     print:g('e-print'), fabric:g('e-fabric'), texture:g('e-texture'), silhouette:g('e-silhouette'),
     brand:g('e-brand'), seasonality:g('e-season'), formality:g('e-formality'),
+    ownerProfile:g('e-owner'), shared:document.getElementById('e-shared').checked,
     weatherSuitability:g('e-weather'), fitNotes:g('e-fit'), stylingNotes:g('e-styling'),
     trendNotes:g('e-trend'), careInstructions:g('e-care'), pairingIdeas:g('e-pairing')
   };
@@ -743,7 +1000,7 @@ async function reanalyze(id){
     const resp = await fetch(i.imageUrl);
     const blob = await resp.blob();
     await db.collection('items').doc(id).update({status:'analyzing'});
-    await analyzeItem(db.collection('items').doc(id), blob);
+    await analyzeItem(db.collection('items').doc(id), blob, i.ownerProfile || activeProfile);
     toast('Updated.'); closeModal();
   }catch(e){ console.error(e); toast('Could not re-read the photo.'); }
 }
@@ -759,16 +1016,19 @@ async function deleteItem(id){
 
 // ---------- today: outfit recommendation ----------
 function compactInventory(){
-  return items.filter(i=>i.status!=='analyzing').map(i=>({
+  return scopedItems().filter(i=>i.status!=='analyzing').map(i=>({
     id:i.id, category:i.category, subtype:i.subtype, colors:i.colors, formality:i.formality,
-    seasonality:i.seasonality, brand:i.brand||undefined, fitNotes:i.fitNotes||undefined
+    seasonality:i.seasonality, brand:i.brand||undefined, fitNotes:i.fitNotes||undefined,
+    owner: profileById(i.ownerProfile)?.name || undefined
   }));
 }
 
 async function getOutfit(){
   if(!sample){ toast('Recommendations need Claude access in this view.'); return; }
-  if(items.length<3){ toast('Add a few more items to your closet first.'); return; }
   const inv = compactInventory();
+  if(inv.length<3){ toast('Add a few more items to this closet first.'); return; }
+  const person = profileById(activeProfile);
+  const kid = isKid(activeProfile);
   const ctx = {
     location: val('f-location'), date: val('f-date'), plans: val('f-plans'),
     vibe: val('f-vibe'), needs: val('f-needs'), avoid: val('f-avoid'), include: val('f-include')
@@ -777,7 +1037,10 @@ async function getOutfit(){
   document.getElementById('today-thinking').style.display='flex';
   document.getElementById('today-result').innerHTML='';
 
-  const prompt = `You are Drew's personal stylist working ONLY from the closet inventory below (each item has an id — use those exact ids).
+  const kidGuard = kid ? `
+This outfit is for a 12-year-old (${person.name}). Keep every part of the response comfortable, practical and age-appropriate: no adult, body-conscious, or sexualized styling language; keep the "hairBeauty" note to something simple and practical for a child (e.g. a braid or ponytail that stays out of her face) with no makeup or adult beauty language; if the stated plan or vibe reads as adult-oriented, adapt it into a wholesome equivalent suited to a child.` : '';
+
+  const prompt = `You are ${kid? "a wardrobe helper for a family closet app, dressing":"a personal stylist working ONLY from the closet inventory below, dressing"} ${person? person.name : 'the user'} today (each item has an id — use those exact ids).${kidGuard}
 
 Closet inventory (JSON):
 ${JSON.stringify(inv).slice(0,50000)}
@@ -958,6 +1221,7 @@ async function saveOutfitHistory(data, ctx){
   try{
     await db.collection('outfits').add({
       date: ctx.date, location: ctx.location, plans: ctx.plans, vibe: ctx.vibe,
+      ownerProfile: activeProfile,
       itemIds: (data.bestOutfit||{}).itemIds||[], createdAt: new Date().toISOString()
     });
   }catch(e){}
@@ -966,16 +1230,20 @@ async function saveOutfitHistory(data, ctx){
 // ---------- style notes ----------
 async function updateNotes(){
   if(!sample){ toast('Notes need Claude access in this view.'); return; }
-  if(items.length<4){ toast('Catalog a few more items first.'); return; }
+  const scoped = scopedItems().filter(i=>i.status!=='analyzing');
+  if(scoped.length<4){ toast('Catalog a few more items in this closet first.'); return; }
   document.getElementById('notes-thinking').style.display='flex';
-  const inv = items.filter(i=>i.status!=='analyzing').map(i=>({
+  const person = profileById(activeProfile);
+  const kid = isKid(activeProfile);
+  const inv = scoped.map(i=>({
     id:i.id, category:i.category, subtype:i.subtype, colors:i.colors, formality:i.formality,
     seasonality:i.seasonality, wearCount:i.wearCount||0, lastWorn:i.lastWorn||null
   }));
+  const kidGuard = kid ? ` This closet belongs to a 12-year-old (${person.name}) — keep every description wholesome, practical and age-appropriate; no adult or body-conscious language.` : '';
   const prompt = `Here is a closet inventory as JSON, each item with an id, category, subtype, colors, formality, seasonality, wearCount and lastWorn date:
 ${JSON.stringify(inv).slice(0,50000)}
 
-Today's date is ${new Date().toISOString().slice(0,10)}.
+Today's date is ${new Date().toISOString().slice(0,10)}.${kidGuard}
 
 Analyze it and reply with ONLY this JSON shape:
 {
@@ -989,7 +1257,7 @@ Use only item ids that appear in the inventory above.`;
   try{
     const data = await sample.json(prompt, {modelTier:'complex'});
     renderNotes(data);
-    await db.doc('notes/style').set({...data, updatedAt:new Date().toISOString()});
+    await db.doc('notes/style-'+activeProfile).set({...data, updatedAt:new Date().toISOString()});
   }catch(e){
     console.error(e);
     toast("Couldn't update notes just now.");
@@ -1015,15 +1283,16 @@ function renderNotes(data){
   set('note-dormant', data.notWornIds, id=>`<li>${esc(nameFor(id))}</li>`);
 }
 
-// load any saved notes on boot
-(async function loadNotes(){
-  await new Promise(r=>setTimeout(r,600));
+// load any saved notes for the active profile
+async function loadNotes(){
   if(!db) return;
   try{
-    const snap = await db.doc('notes/style').get();
+    const snap = await db.doc('notes/style-'+activeProfile).get();
     if(snap.exists) renderNotes(snap.data);
+    else renderNotes({});
   }catch(e){}
-})();
+}
+(async function(){ await new Promise(r=>setTimeout(r,600)); loadNotes(); })();
 </script>
 </body>
 </html>
